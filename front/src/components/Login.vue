@@ -1,32 +1,51 @@
 <template>
-  <div class="hw-login">
-    <div role="group">
-	    <label for="input-login">Login:</label>
-	    <b-form-input
-	      id="input-login"
-	      v-model="login"	      	     	     
-	      trim
-	    ></b-form-input>
-    </div>
-     <div role="group">
-	    <label for="input-login">Mot de passe:</label>
-	    <b-form-input
-	      id="input-password"
-	      v-model="password"	      	     	      
-	      trim
-	    ></b-form-input>
-    </div>
-    
-    <b-button>Connexion</b-button>    
-  </div>
+    <b-card class="text-left">
+        <div role="group">
+            <label for="input-login">{{ lang.LoginLabel }}:</label>
+            <b-form-input
+              id="input-login"
+              v-model="login"	      	     	     
+              trim>
+            </b-form-input>
+         </div>
+         <div role="group">
+             <label for="input-password">{{ lang.PasswordLabel }}:</label>
+             <b-form-input
+              type="password"
+              id="input-password"
+              v-model="password"	      	     	      
+              trim
+        	  ></b-form-input>
+    	 </div>  
+    	 <div role="group">
+    	     <b-button @click="callLogin()">{{ lang.ConnectionLabel }}</b-button>
+    	 </div>
+  </b-card>
 </template>
 
 <script>
+import jQuery from "jquery";
+import lang from "../lang.js";
+
 export default {
   name: 'Login',
-  props: {
-    login: String,
-    password: String,
+  data(){
+    return {
+        lang: lang,
+        login: "",
+        password: "",
+    };
+  },
+  methods: {
+      callLogin () {
+          jQuery.post('/api/user/login', {
+              login: this.login,
+              password: this.password
+          })
+          .done((r)=>{
+             //console.log(r); 
+          });
+      }
   }
 }
 </script>
