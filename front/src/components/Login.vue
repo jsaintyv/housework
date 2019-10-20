@@ -1,7 +1,7 @@
 <template>
     <b-card class="text-left">
         <div role="group">
-            <label for="input-login">{{ lang.LoginLabel }}:</label>
+            <label for="input-login">{{lang.LoginLabel}}:</label>
             <b-form-input
               id="input-login"
               v-model="login"	      	     	     
@@ -9,7 +9,7 @@
             </b-form-input>
          </div>
          <div role="group">
-             <label for="input-password">{{ lang.PasswordLabel }}:</label>
+             <label for="input-password">{{lang.PasswordLabel}}:</label>
              <b-form-input
               type="password"
               id="input-password"
@@ -18,13 +18,13 @@
         	  ></b-form-input>
     	 </div>  
     	 <div role="group">
-    	     <b-button @click="callLogin()">{{ lang.ConnectionLabel }}</b-button>
+    	     <b-button @click="callLogin()">{{lang.ConnectionLabel}}</b-button>
     	 </div>
   </b-card>
 </template>
 
 <script>
-import jQuery from "jquery";
+import UserService from "../services/UserService.js";
 import lang from "../lang.js";
 
 export default {
@@ -38,13 +38,12 @@ export default {
   },
   methods: {
       callLogin () {
-          jQuery.post('/api/user/login', {
-              login: this.login,
-              password: this.password
-          })
-          .done((r)=>{
-             //console.log(r); 
-          });
+         console.log(UserService);
+         UserService
+         	.login(this.login, this.password)
+         	.done((r)=> {
+				console.log(r);     	    
+         	});                   
       }
   }
 }

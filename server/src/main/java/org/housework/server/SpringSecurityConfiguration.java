@@ -1,8 +1,5 @@
 package org.housework.server;
 
-import javax.sql.DataSource;
-
-import org.housework.server.models.RoleAuthority;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -13,7 +10,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 @Configuration
 public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
@@ -39,16 +35,33 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
 
-        http
-                //HTTP Basic authentication
-                .httpBasic()
+        http        		
+                .requestCache()                	
                 .and()
                 .authorizeRequests()
                 .antMatchers(HttpMethod.GET, "/api/user/list").hasAuthority("ADMIN")//.hasRole(RoleAuthority.ADMIN.name())
-                .antMatchers(HttpMethod.POST, "/api/tasks/**").hasAnyAuthority("ADMIN", "USER")//.hasRole(RoleAuthority.USER.name())
+                .antMatchers(HttpMethod.GET, "/api/user/current").authenticated() //.hasRole(RoleAuthority.ADMIN.name())
+                .antMatchers(HttpMethod.POST, "/api/tasks/**").authenticated() //.hasRole(RoleAuthority.USER.name())
+                .antMatchers(HttpMethod.POST, "/login").permitAll() //.hasRole(RoleAuthority.USER.name())
+                .antMatchers(HttpMethod.POST, "/rejected").permitAll() 
+                .antMatchers(HttpMethod.GET, "/index.html").permitAll() 
                 .and()
                 .csrf().disable()
-                .formLogin().disable();
+                .formLogin()
+                .loginPage("/index.html")
+                .loginProcessingUrl("/login")
+                .usernameParameter("login")
+                .passwordParameter("password")
+                .defaultSuccessUrl("/api/user/current", true)
+                .failureUrl("/rejected");
+                
+                /*
+                .and()
+                .logout()
+                .logoutUrl("/perform_logout")
+                .deleteCookies("JSESSIONID")
+                .logoutSuccessHandler(logoutSuccessHandler());
+                */
     } 
     
     

@@ -30,8 +30,16 @@ public class User implements UserDetails {
     private String role;
          
 	public User() {}
+    	
+    public long getId() {
+		return id;
+	}
     
-    public String getLogin() {
+	public void setId(long id) {
+		this.id = id;
+	}
+
+	public String getLogin() {
 		return login;
 	}
 
