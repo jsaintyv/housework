@@ -13,7 +13,7 @@
 *.ipr
 
 node_modules
-
+/server/mydb
 
 ### NetBeans ###
 /nbproject/private/

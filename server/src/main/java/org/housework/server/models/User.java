@@ -1,10 +1,21 @@
 package org.housework.server.models;
 
-import javax.persistence.*;
+import java.util.Arrays;
+import java.util.Collection;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 @Entity
 @Table(name="users")
-public class User {
+public class User implements UserDetails {
 
     // PrimaryKey
     @Id
@@ -16,8 +27,9 @@ public class User {
     
     private String password;
     
-    
-    public User() {}
+    private String role;
+         
+	public User() {}
     
     public String getLogin() {
 		return login;
@@ -33,5 +45,53 @@ public class User {
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+	
+	public String getRole() {
+		return role;
+	}
+
+	public void setRole(String role) {
+		this.role = role;
+	}
+	
+	public void setRole(RoleAuthority role) {
+		this.role = role.name();
+	}
+
+
+
+	@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		RoleAuthority role = RoleAuthority.USER;
+		if(this.role != null) {
+			role = RoleAuthority.valueOf(this.role);
+		}
+		return Arrays.asList(role);
+	}
+
+	@Override
+	public String getUsername() {
+		return login;
+	}
+
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
+	}
+
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
+	}
+
+	@Override
+	public boolean isEnabled() { 
+		return true;
 	}
 }
