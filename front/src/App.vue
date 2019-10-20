@@ -1,27 +1,39 @@
 <template>
   <div id="app">
-    <Login />
+  	<b-navbar toggleable="lg" type="dark" variant="info">
+    	<b-navbar-brand href="#">House Work</b-navbar-brand>
+    </b-navbar>
+  	   	
+    <router-view></router-view>
   </div> 
 </template> 
 
 <script>
+
+import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
+import LoginStatus from './components/LoginStatus.vue'
+
+
+
+const routes = [
+    { path: '/', component: Login },
+    { path: '/house', component: LoginStatus }
+  ];
+  
+const router = new VueRouter({
+    routes // short for `routes: routes`
+});
+
 
 export default {
   name: 'app',
-  components: {
-	  Login
-  }
-}
+  router
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
-  margin-top: 60px;
+    
 }
 </style>

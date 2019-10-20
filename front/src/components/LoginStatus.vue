@@ -1,30 +1,21 @@
 <template>
-    
+    <div>{{login}}</div>
 </template>
 
 <script>
-import jQuery from "jquery";
+import UserService from "../services/UserService.js";
 import lang from "../lang.js";
 
-export default {
-  name: 'Login',
-  data(){
-    return {
+export default {  
+  data() {
+    var r = {
         lang: lang,
-        login: "",
-        password: "",
-    };
+        login: ""
+    };   
+    UserService.currentUser().done((u)=>r.login=u.login);  
+    return r; 
   },
-  methods: {
-      callLogin () {
-          jQuery.post('/api/user/login', {
-              login: this.login,
-              password: this.password
-          })
-          .done((r)=>{
-             //console.log(r); 
-          });
-      }
+  methods: {      
   }
 }
 </script>

@@ -10,9 +10,9 @@ class UserService {
     
     currentUser() {
         if(this.defUser == null) {
-            this.defUser = jQuery.get("/api/user/connected"); 
+            this.defUser = jQuery.get("/api/user/current"); 
         } 
-        return defUser;
+        return this.defUser;
     }
     
     login(login, password) {            

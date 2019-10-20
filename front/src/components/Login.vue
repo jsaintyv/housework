@@ -1,5 +1,6 @@
 <template>
-    <b-card class="text-left">
+    <b-card id="hw-login" class="text-left">
+    	<b-card-text>
         <div role="group">
             <label for="input-login">{{lang.LoginLabel}}:</label>
             <b-form-input
@@ -17,7 +18,9 @@
               trim
         	  ></b-form-input>
     	 </div>  
-    	 <div role="group">
+    	 </b-card-text>
+    	     	  
+    	 <div id="hw-button" role="group">
     	     <b-button @click="callLogin()">{{lang.ConnectionLabel}}</b-button>
     	 </div>
   </b-card>
@@ -42,7 +45,13 @@ export default {
          UserService
          	.login(this.login, this.password)
          	.done((r)=> {
-				console.log(r);     	    
+				console.log(r);
+				
+				if(r != false) {
+					this.$router.push('/house');
+				} else {
+				    alert("Error");
+				}
          	});                   
       }
   }
@@ -51,6 +60,15 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+#hw-login {
+	position:absolute;
+	top:20%;
+	left:20%;
+	right:20%;
+	
+}
+
 h3 {
   margin: 40px 0 0;
 }
