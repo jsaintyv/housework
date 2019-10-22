@@ -1,6 +1,5 @@
 package org.housework.server;
 
-import org.housework.server.controllers.UserController;
 import org.housework.server.models.RoleAuthority;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
@@ -35,6 +34,7 @@ public class ServerApplication {
 				user = new User();
 				user.setLogin("admin");
 				user.setPassword(new BCryptPasswordEncoder().encode("admin"));
+				user.setEnabled(true);
 				
 				user.setRole(RoleAuthority.ADMIN);
 				userRepository.save(user);

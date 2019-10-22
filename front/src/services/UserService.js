@@ -1,4 +1,3 @@
-
 import jQuery from "jquery"; 
 
 class UserService {
@@ -22,8 +21,17 @@ class UserService {
         });
         
         return this.defUser;
-    }    
-};
+    }
+    
+    register(login, password) {            
+        this.defUser = jQuery.post("/register", {
+            login: login,
+            password: password
+        });
+        
+        return this.defUser;
+    }
+}
 
 var instance = new UserService();
 

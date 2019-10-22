@@ -12,13 +12,17 @@
 
 import VueRouter from 'vue-router'
 import Login from './components/Login.vue'
+import Register from './components/Register.vue'
+import PostRegister from './components/PostRegister.vue'
 import LoginStatus from './components/LoginStatus.vue'
 
 
 
 const routes = [
     { path: '/', component: Login },
-    { path: '/house', component: LoginStatus }
+    { path: '/house', component: LoginStatus },
+    { path: '/register', component: Register },
+    { path: '/postRegister', component: PostRegister },
   ];
   
 const router = new VueRouter({
