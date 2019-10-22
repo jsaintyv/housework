@@ -23,6 +23,8 @@ public class House {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    
+    private String name;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -44,6 +46,14 @@ public class House {
 
 	public void setId(int id) {
 		this.id = id;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public User getOwner() {
@@ -75,5 +85,13 @@ public class House {
 		if (id != other.id)
 			return false;
 		return true;
+	}
+
+	public boolean accept(User user) {
+		if(user == null) {
+			return false;
+		}
+		
+		return user.getId() == owner.getId() || getUsers().contains(user);
 	}
 }

@@ -19,6 +19,8 @@ import javax.persistence.Table;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 @Table(name="users")
 public class User implements UserDetails {
@@ -39,17 +41,7 @@ public class User implements UserDetails {
     private long registeringCode;
     
     private String role;
-    
-    @ManyToMany(cascade = {
-        CascadeType.PERSIST,
-        CascadeType.MERGE
-    })
-    @JoinTable(name = "user_affected_house",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "house_id")
-    )
-    private Set<House> houses = new HashSet<>();
-    
+           
 	public User() {}
     	
     public long getId() {
@@ -68,10 +60,12 @@ public class User implements UserDetails {
 		this.login = login;
 	}
 
+	@JsonIgnore
 	public String getPassword() {
 		return password;
 	}
 
+	@JsonIgnore
 	public void setPassword(String password) {
 		this.password = password;
 	}
@@ -87,8 +81,6 @@ public class User implements UserDetails {
 	public void setRole(RoleAuthority role) {
 		this.role = role.name();
 	}
-
-
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -126,16 +118,14 @@ public class User implements UserDetails {
 	
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
-	}
-
-	public Set<House> getHouses() {
-		return houses;
-	}
+	}	
 	
+	@JsonIgnore
 	public long getRegisteringCode() {
 		return registeringCode;
 	}
 
+	@JsonIgnore
 	public void setRegisteringCode(long registeringCode) {
 		this.registeringCode = registeringCode;
 	}
