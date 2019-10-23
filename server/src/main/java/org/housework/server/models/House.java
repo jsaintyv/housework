@@ -30,7 +30,10 @@ public class House {
     @JoinColumn(name = "user_id")
     private User owner;
     
-    @ManyToMany(cascade = {
+    
+    @ManyToMany(
+    fetch = FetchType.EAGER,
+   	cascade = {
         CascadeType.PERSIST,
         CascadeType.MERGE
     })

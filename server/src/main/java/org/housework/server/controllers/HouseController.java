@@ -1,5 +1,7 @@
 package org.housework.server.controllers;
 
+import java.util.List;
+
 import org.housework.server.UserSecurityService;
 import org.housework.server.front.HouseForm;
 import org.housework.server.models.House;
@@ -57,6 +59,28 @@ public class HouseController {
 								
 		return new ResponseEntity<>(house, HttpStatus.FOUND);
 	}
+	
+	@GetMapping("/api/house/listOwned")
+	public ResponseEntity<List<House>>  listOwned() {		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(user == null) {
+			// Not found to avoid a scan of house.id
+			return new ResponseEntity<List<House>>(HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<>(houseRepository.findByOwner(user), HttpStatus.FOUND);
+	}
+	
+	@GetMapping("/api/house/listAvailables")
+	public ResponseEntity<List<House>>  listAvailables() {		
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(user == null) {
+			// Not found to avoid a scan of house.id
+			return new ResponseEntity<List<House>>(HttpStatus.FORBIDDEN);
+		}
+		
+		return new ResponseEntity<>(houseRepository.findByUsers(user.getId()), HttpStatus.FOUND);
+	}
 		
 	@PostMapping("/api/house/update/{id}")
 	public ResponseEntity<House>  update(Integer id, HouseForm form) {
@@ -109,8 +133,8 @@ public class HouseController {
 		}
 		
 		User newUser = userRepository.findByLogin(login);
-		if(house == null) {
-			return new ResponseEntity<House>(HttpStatus.BAD_REQUEST);
+		if(newUser == null) {
+			return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 		}
 		house.getUsers().add(newUser);		
 		houseRepository.save(house);

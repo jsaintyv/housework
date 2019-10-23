@@ -35,5 +35,4 @@ class UserService {
 
 var instance = new UserService();
 
-
 export default instance;
