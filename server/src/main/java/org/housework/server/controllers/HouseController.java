@@ -16,13 +16,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class HouseController {
-	private static final Logger LOG = LoggerFactory.getLogger(HouseController.class);
-	
 	@Autowired
 	HouseRepository houseRepository;
 	
@@ -36,9 +35,9 @@ public class HouseController {
 	}
 	
 	@PostMapping("/api/house/create")
-	public ResponseEntity<House>  insert(HouseForm form) {					
+	public ResponseEntity<House>  insert(HouseForm houseForm) {					
 		House house = new House();
-		form.copyInto(house);
+		houseForm.copyInto(house);
 		house.setOwner(userSecurityService.getCurrentUser());					
 		houseRepository.save(house);		
 		return new ResponseEntity<>(house, HttpStatus.CREATED);
@@ -63,23 +62,14 @@ public class HouseController {
 	@GetMapping("/api/house/listOwned")
 	public ResponseEntity<List<House>>  listOwned() {		
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(user == null) {
-			// Not found to avoid a scan of house.id
-			return new ResponseEntity<List<House>>(HttpStatus.FORBIDDEN);
-		}
 		
-		return new ResponseEntity<>(houseRepository.findByOwner(user), HttpStatus.FOUND);
+		return ResponseEntity.ok(houseRepository.findByOwner(user));
 	}
 	
 	@GetMapping("/api/house/listAvailables")
 	public ResponseEntity<List<House>>  listAvailables() {		
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(user == null) {
-			// Not found to avoid a scan of house.id
-			return new ResponseEntity<List<House>>(HttpStatus.FORBIDDEN);
-		}
-		
-		return new ResponseEntity<>(houseRepository.findByUsers(user.getId()), HttpStatus.FOUND);
+		return ResponseEntity.ok(houseRepository.findByUsers(user.getId()));
 	}
 		
 	@PostMapping("/api/house/update/{id}")
@@ -105,23 +95,23 @@ public class HouseController {
 	
 	
 	@DeleteMapping("/api/house/delete/{id}")
-	public ResponseEntity<House>  delete(Integer id) {
+	public ResponseEntity<Boolean>  delete(@PathVariable("id")  Integer id) {
 		House house = houseRepository.findById(id).orElse(null);
 		if(house == null) {
-			return new ResponseEntity<House>(HttpStatus.NOT_FOUND);
+			return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 		}
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		if(! house.accept(user)) {
+		if(house.getOwner().getId() != user.getId()) {
 			// Not found to avoid a scan of house.id
-			return new ResponseEntity<House>(HttpStatus.FORBIDDEN);
+			return new ResponseEntity<>(HttpStatus.FORBIDDEN);
 		}
 									
 		houseRepository.delete(house);	
-		return new ResponseEntity<>(house, HttpStatus.ACCEPTED);
+		return ResponseEntity.ok(Boolean.TRUE);
 	}
 	
 	@PostMapping("/api/house/register/{id}")
-	public ResponseEntity<House>  register(Integer id, String login) {
+	public ResponseEntity<House>  register(@PathVariable("id") Integer id, String login) {
 		House house = houseRepository.findById(id).orElse(null);
 		if(house == null) {
 			return new ResponseEntity<House>(HttpStatus.NOT_FOUND);

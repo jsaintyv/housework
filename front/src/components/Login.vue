@@ -50,7 +50,7 @@ export default {
 				console.log(r);
 				
 				if(r != false) {
-					this.$router.push('/house');
+					this.$router.push('/board');
 				} else {
 				    alert("Error");
 				}

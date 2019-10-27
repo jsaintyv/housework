@@ -8,7 +8,7 @@ class HouseService {
      * @return deffered
      */
     create(houseForm) {
-        return jQuery.post("/api/house/create", {houseForm: houseForm});      
+        return jQuery.post("/api/house/create", houseForm);      
     }
     
     /**
@@ -30,7 +30,21 @@ class HouseService {
      */
     remove(houseId) {
         return jQuery.ajax({url :"/api/house/delete/" + houseId, method: "DELETE"});      
-    }    
+    }
+    
+    /**
+     * @return deffered
+     */
+    listOwned() {
+        return jQuery.get("/api/house/listOwned");      
+    }
+    
+    /**
+     * @return deffered
+     */
+    listAvailables() {
+        return jQuery.get("/api/house/listAvailables");      
+    }
 }
 
 var instance = new HouseService();

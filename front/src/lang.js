@@ -6,7 +6,9 @@ var fr = {
     ConfirmPasswordLabel: "Confirmer le mot de passe",
     ConnectionLabel: "Connexion",
     RegisterLabel: "S'enregistrer",
-    PostRegisterLabel: "Nous vous avons envoyé un e-mail avec un lien. Veuillez cliquer sur ce lien pour confirmer votre inscription"
+    PostRegisterLabel: "Nous vous avons envoyé un e-mail avec un lien. Veuillez cliquer sur ce lien pour confirmer votre inscription",
+    CreateHouseLabel: "Ajouter",
+    PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : "
 };
 
 export default fr;

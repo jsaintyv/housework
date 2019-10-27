@@ -1,5 +1,5 @@
 <template>
-    <div>{{login}}</div>
+    <em>{{login}}</em>
 </template>
 
 <script>
@@ -7,6 +7,7 @@ import UserService from "../services/UserService.js";
 import lang from "../lang.js";
 
 export default {  
+  name: "LoginStatus",
   data() {
     var r = {
         lang: lang,
