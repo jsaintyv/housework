@@ -13,7 +13,9 @@ export default {
         lang: lang,
         login: ""
     };   
-    UserService.currentUser().done((u)=>r.login=u.login);  
+    UserService
+      .currentUser()
+      .done((u)=>r.login=u.login);  
     return r; 
   },
   methods: {      

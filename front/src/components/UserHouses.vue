@@ -1,16 +1,15 @@
 <template>
 	<div>
-	    <ul>
-			<li v-for="h in owned" v-bind:key="h.id">
-				{{ h.name }}  ({{h.id}}) <b-button @click="remove(h)">-</b-button>
-				
+	    <ul> 
+			<li v-for="h in getHouses" v-bind:key="h.id" >
+				<p @click="select(h)">{{ h.name }}  ({{h.id}})</p> <b-button @click="remove(h)">-</b-button>				
 			</li>
 		</ul>
 		<b-button @click="create()">{{lang.CreateHouseLabel}}</b-button>
-		<b-modal ref="mdlConfirmRemove" title="BootstrapVue" @ok="removeConfirmed()">
-			<p>{{lang.PleaseConfirmRemoveOf}}</p>
+		<b-modal ref="mdlConfirmRemove" title="" @ok="removeConfirmed()">
+			{{lang.PleaseConfirmRemoveOf}}
 		</b-modal>
-		<b-modal ref="mdlConfirmAdd" title="BootstrapVue" @ok="createConfirmed()">
+		<b-modal ref="mdlConfirmAdd" title="" @ok="createConfirmed()">
 			<div role="group">
              <label for="input-password">{{lang.NameLabel}}:</label>
              <b-form-input
@@ -27,6 +26,7 @@
 <script>
 import HouseService from "../services/HouseService.js";
 import lang from "../lang.js";
+import {default as store, SELECT_HOUSE, UPDATE_HOUSES, REMOVE_HOUSE} from "../stores/index.js";
 
 export default {
   name: 'UserHouses',
@@ -39,20 +39,21 @@ export default {
         newName: ""
     };
     
-    
     return model;
   },
   created() {
       this.loading();
   },
+  computed: {
+	  getHouses() {
+		  return store.state.houses;
+	  }
+  },
   methods: {
       loading() {
-          var self = this;
           HouseService.listOwned()
           	.done((l)=>{
-          	    l.forEach((h)=>{
-          	        self.owned.push(h)
-          	    });
+				store.commit(UPDATE_HOUSES, l);
           	});
       },
       create() {
@@ -61,7 +62,13 @@ export default {
       createConfirmed() {
        	HouseService
        		.create({name: this.newName})
-       		.done((h)=> this.owned.push(h));
+       		.done((h)=> {
+			    store.commit(UPDATE_HOUSES, [...store.state.houses, h]);
+       		    this.$bvToast.toast('Add success', {
+       		        variant: 'success',
+       		        solid: true
+       		    });
+       		});
       },
       remove(h) {
           this.selectedToRemove = h;
@@ -71,9 +78,12 @@ export default {
           HouseService
           	.remove(this.selectedToRemove.id)
           	.done(()=> {
-          		this.owned.splice(this.owned.indexOf(this.selectedToRemove), 1);	    
+          		store.commit(REMOVE_HOUSE, this.selectedToRemove);	    
           	});
-      }
+	  },
+	  select(h) {
+		  store.commit(SELECT_HOUSE, h);
+	  }
   }
 }
 </script>

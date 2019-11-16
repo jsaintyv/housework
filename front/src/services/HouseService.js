@@ -22,7 +22,7 @@ class HouseService {
      * @return deffered
      */
     update(houseId, houseForm) {
-        return jQuery.post("/api/house/update/" + houseId, {houeForm: houseForm});      
+        return jQuery.post("/api/house/update/" + houseId, {houseForm: houseForm});      
     }
     
     /**

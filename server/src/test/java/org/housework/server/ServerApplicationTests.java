@@ -1,12 +1,18 @@
 package org.housework.server;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Random;
 
 import org.housework.server.models.House;
 import org.housework.server.models.HouseRepository;
 import org.housework.server.models.RoleAuthority;
+import org.housework.server.models.TaskType;
+import org.housework.server.models.TaskTypeRepository;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
+import org.housework.server.models.Work;
+import org.housework.server.models.WorkRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +27,12 @@ class ServerApplicationTests {
 	@Autowired
 	HouseRepository houseRepository;
 
+	@Autowired
+	TaskTypeRepository taskTypeRepository;
 	
+	@Autowired
+	WorkRepository workRepository;
+
 	@Test
 	void testUser() {
 		final String email = "toto@gmail.com";
@@ -36,6 +47,7 @@ class ServerApplicationTests {
 		
 		User r = userRepository.findById(id).orElse(null);
 		Assertions.assertEquals(r, user);
+		user =r;
 		
 		final String homeName = "sweet";
 		
@@ -66,6 +78,36 @@ class ServerApplicationTests {
 		list = houseRepository.findByUsers(userChild.getId()); 
 	 	Assertions.assertEquals(list.size(), 1);
 	 	Assertions.assertEquals(list.get(0).getName(), homeName);
+	 	
+	 	house.setRegisterCode(new Random().nextLong());
+	 	house.setOwner(user);
+	 
+	 	TaskType type = new TaskType();
+	 	type.setName("Lave-vaisselle");
+	 	type.setValue(1.0);
+	 	taskTypeRepository.save(type);
+	 	house.getTypes().add(type);
+	 	
+	 	type = new TaskType();
+	 	type.setName("Mettre la table");
+	 	type.setValue(1.0);
+	 	type = taskTypeRepository.save(type);
+	 	house.getTypes().add(type);
+	 	
+	 	houseRepository.save(house);
+	 	
+	 	house = houseRepository.findById(house.getId()).orElse(null);
+		Assertions.assertEquals(house.getTypes().size(), 2);
+		
+		Work work = new Work();
+		work.setHouse(house);
+		work.setWorker(userChild);
+		work.setDate(new Date());
+		workRepository.save(work);
+		
+		List<Work> works = workRepository.findByUsers(userChild.getId());
+		Assertions.assertEquals(works.size(), 1);
+		
 	 	
 	}
 

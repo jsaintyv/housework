@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -26,9 +27,13 @@ public class House {
     
     private String name;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne( fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User owner;
+    
+    @OneToMany(fetch = FetchType.EAGER)
+    @JoinColumn(name = "house_id")
+    private Set<TaskType> types = new HashSet<TaskType>();
     
     
     @ManyToMany(
@@ -42,6 +47,8 @@ public class House {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users = new HashSet<>();
+    
+    private Long registerCode;
 
 	public int getId() {
 		return id;
@@ -71,6 +78,18 @@ public class House {
 		return users;
 	}
 	
+	public Set<TaskType> getTypes() {
+		return types;
+	}
+	
+	public Long getRegisterCode() {
+		return registerCode;
+	}
+
+	public void setRegisterCode(Long registerCode) {
+		this.registerCode = registerCode;
+	}
+
 	@Override
 	public int hashCode() {
 		return Long.hashCode(this.id);
@@ -96,5 +115,13 @@ public class House {
 		}
 		
 		return user.getId() == owner.getId() || getUsers().contains(user);
+	}
+	
+	public boolean isAdmin(User user) {
+		if(user == null) {
+			return false;
+		}
+		
+		return user.getId() == owner.getId();
 	}
 }

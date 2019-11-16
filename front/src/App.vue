@@ -8,7 +8,7 @@
 					<LoginStatus />
 				</template>
 				<b-dropdown-item href="#">Accueil</b-dropdown-item>
-          		<b-dropdown-item href="#">Déconnexion</b-dropdown-item>
+          		<b-dropdown-item href="#/">Déconnexion</b-dropdown-item>
 			</b-nav-item-dropdown>
     	</b-navbar-nav>
     </b-navbar>
@@ -25,8 +25,9 @@ import Register from './components/Register.vue'
 import PostRegister from './components/PostRegister.vue'
 import UserBoard from './components/UserBoard.vue'
 import LoginStatus from './components/LoginStatus.vue'
+import store from './stores';
 
-
+console.log(store);
 
 const routes = [
     { path: '/', component: Login },
@@ -45,7 +46,8 @@ export default {
   components: {
     'LoginStatus': LoginStatus  
   },
-  router
+  router,
+  store
 };
 </script>
 
