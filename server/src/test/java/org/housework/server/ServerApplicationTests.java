@@ -2,7 +2,6 @@ package org.housework.server;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Random;
 
 import org.housework.server.models.House;
 import org.housework.server.models.HouseRepository;
@@ -79,7 +78,6 @@ class ServerApplicationTests {
 	 	Assertions.assertEquals(list.size(), 1);
 	 	Assertions.assertEquals(list.get(0).getName(), homeName);
 	 	
-	 	house.setRegisterCode(new Random().nextLong());
 	 	house.setOwner(user);
 	 
 	 	TaskType type = new TaskType();
@@ -107,8 +105,5 @@ class ServerApplicationTests {
 		
 		List<Work> works = workRepository.findByUsers(userChild.getId());
 		Assertions.assertEquals(works.size(), 1);
-		
-	 	
 	}
-
 }

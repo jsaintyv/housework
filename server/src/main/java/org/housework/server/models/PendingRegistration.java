@@ -1,7 +1,5 @@
 package org.housework.server.models;
 
-import java.util.Date;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -12,41 +10,29 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 @Entity
-@Table(name="works")
-public class Work {
+@Table(name="pending_registration")
+public class PendingRegistration {
 	// PrimaryKey
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-
-    Date date;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
+    	
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User worker;
-    
-    @ManyToOne(fetch = FetchType.EAGER)
+	   
+	@ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "house_id")
-    private House house;
+    private House target;
+	
+    private Long secret;
     
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "type_id")
-    private TaskType type;
-
 	public int getId() {
 		return id;
 	}
 
 	public void setId(int id) {
 		this.id = id;
-	}
-
-	public Date getDate() {
-		return date;
-	}
-
-	public void setDate(Date date) {
-		this.date = date;
 	}
 
 	public User getWorker() {
@@ -57,19 +43,19 @@ public class Work {
 		this.worker = worker;
 	}
 
-	public House getHouse() {
-		return house;
+	public House getTarget() {
+		return target;
 	}
 
-	public void setHouse(House house) {
-		this.house = house;
+	public void setTarget(House target) {
+		this.target = target;
 	}
 
-	public TaskType getType() {
-		return type;
+	public Long getSecret() {
+		return secret;
 	}
 
-	public void setType(TaskType type) {
-		this.type = type;
-	}	
+	public void setSecret(Long secret) {
+		this.secret = secret;
+	}    
 }

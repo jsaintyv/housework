@@ -67,13 +67,17 @@ public class UserController {
 		user.setPassword(new BCryptPasswordEncoder().encode(password));
 		user.setEnabled(false);
 		user.setRole(RoleAuthority.USER);
-		user.setRegisteringCode(random.nextLong() + (System.nanoTime()%((long)1e6)));
+		user.setRegisteringCode(getNextRandomLong());
 		userRepository.save(user);
 		
 		UriComponents uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/confirmRegister").queryParam("login", login).queryParam("registeringCode", user.getRegisteringCode()).build();
 		LOG.info(uri.toUriString());
 		
 		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.ACCEPTED);
+	}
+
+	public static long getNextRandomLong() {
+		return random.nextLong() ^ (System.nanoTime()%((long)1e6));
 	}
 
 	@GetMapping("/confirmRegister")

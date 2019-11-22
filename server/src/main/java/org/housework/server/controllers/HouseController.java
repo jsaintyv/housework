@@ -1,12 +1,14 @@
 package org.housework.server.controllers;
 
 import java.util.List;
-import java.util.function.Function;
 
 import org.housework.server.UserSecurityService;
 import org.housework.server.front.HouseForm;
+import org.housework.server.mail.MailService;
 import org.housework.server.models.House;
 import org.housework.server.models.HouseRepository;
+import org.housework.server.models.PendingRegistration;
+import org.housework.server.models.PendingRegistrationRepository;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,6 +29,9 @@ public class HouseController {
 	
 	@Autowired
 	UserRepository userRepository;
+	
+	@Autowired
+	PendingRegistrationRepository pendingRegistrationRepository;
 	
 	@Autowired
 	UserSecurityService userSecurityService;
@@ -87,10 +93,45 @@ public class HouseController {
 			if(newUser == null) {
 				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 			}
-			house.getUsers().add(newUser);		
-			houseRepository.save(house);
+			
+			if(house.accept(newUser)) {
+				// Something wrong, this user was already accepted.
+				return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			}
+			
+			PendingRegistration registration = new PendingRegistration();
+			registration.setTarget(house);
+			registration.setWorker(newUser);
+			registration.setSecret(UserController.getNextRandomLong());
+			registration = pendingRegistrationRepository.save(registration);
+			
+			MailService.instance().sendRegistrationConfirmationMail(registration);
 			
 			return new ResponseEntity<>(house, HttpStatus.ACCEPTED);
 		});
+	}
+	
+	@GetMapping("/confirmRegisteringhouse/{registrationId}/{workerId}/{secret}")
+	public ResponseEntity<House>  register(@PathVariable Integer registrationId, @PathVariable Integer workerId, @PathVariable Long secret) {
+		System.out.println(registrationId);
+		System.out.println(workerId);
+		System.out.println(secret);
+		PendingRegistration registration =  pendingRegistrationRepository.findById(registrationId).orElse(null);
+		if(registration == null) {
+			return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+		}
+		
+		System.out.println("Secret:" + registration.getSecret()); 
+		 
+		if(registration.getSecret().longValue() != secret.longValue()) {
+			return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
+		}
+
+		System.out.println("Same secret"); 
+		
+		registration.getTarget().getUsers().add(registration.getWorker());
+		houseRepository.save(registration.getTarget());
+		
+		return new ResponseEntity<>(registration.getTarget(), HttpStatus.ACCEPTED);
 	}
 }

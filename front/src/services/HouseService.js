@@ -45,6 +45,10 @@ class HouseService {
     listAvailables() {
         return jQuery.get("/api/house/listAvailables");      
     }
+
+    invitUser(house, login) {
+        return jQuery.post("/api/house/register/" + house.id, {"login": login});
+    }
 }
 
 var instance = new HouseService();

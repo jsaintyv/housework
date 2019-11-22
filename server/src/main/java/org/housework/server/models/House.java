@@ -47,8 +47,6 @@ public class House {
         inverseJoinColumns = @JoinColumn(name = "user_id")
     )
     private Set<User> users = new HashSet<>();
-    
-    private Long registerCode;
 
 	public int getId() {
 		return id;
@@ -82,14 +80,8 @@ public class House {
 		return types;
 	}
 	
-	public Long getRegisterCode() {
-		return registerCode;
-	}
-
-	public void setRegisterCode(Long registerCode) {
-		this.registerCode = registerCode;
-	}
-
+	
+	
 	@Override
 	public int hashCode() {
 		return Long.hashCode(this.id);
