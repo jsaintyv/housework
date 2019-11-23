@@ -30,7 +30,6 @@
                 <b-form-input type="date" v-model="when"></b-form-input>
             </div>
         </b-modal>
-
     </div>
 </template>
 

@@ -7,6 +7,5 @@
   <name>housework</name>
   <modules>
   	<module>server</module>
-  	<module>front</module>
   </modules>
 </project>

@@ -71,6 +71,28 @@
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 			</plugin>
+    	    <plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>compile</phase>
+						<configuration>
+							
+								<target>
+									<echo message="Pre build front"/>
+									<exec executable="npm" dir="../front">
+									    <arg value="run" />
+									    <arg value="build"/>
+									</exec>	
+								</target>		
+							
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 			<!-- 
 			<plugin>
 				<artifactId>maven-resources-plugin</artifactId>
