@@ -4,6 +4,12 @@
         <b-row v-for="t in getSelected.types" v-bind:key="t.id">
             <b-col>
                 ({{t.id}})
+            </b-col>    
+            <b-col>
+                {{t.name}}
+            </b-col>
+            <b-col>
+                {{t.value}}
             </b-col>
             <b-col>
                 <b-form-input id="input-" v-model="t.name" type="text" required @change="update(t)"></b-form-input>
