@@ -79,10 +79,32 @@
 						<configuration>
 							
 								<target>
-									<echo message="Pre build front"/>
+									<echo message="== NPM BUILD FRONT =="/>
 									<exec executable="npm" dir="../front">
 									    <arg value="run" />
 									    <arg value="build"/>
+									</exec>	
+								</target>		
+							
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<phase>test</phase>
+						<configuration>
+							
+								<target>
+									<echo message="== NPM TEST FRONT =="/>
+									<exec executable="npm" dir="../front">
+									    <arg value="run" />
+									    <arg value="test"/>
 									</exec>	
 								</target>		
 							
