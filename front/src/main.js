@@ -13,6 +13,13 @@ Vue.config.productionTip = false;
 
 Vue.prototype.$store = store;
 
+
+Vue.filter('formatDate', function(value) {
+  if (value) {
+    return value.getDate() + "/" + value.getMonth() + "/" + value.getYear();
+  }
+});
+
 new Vue({
   render: h => h(App)  
 }).$mount('#app')
