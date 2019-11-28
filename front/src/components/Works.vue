@@ -1,70 +1,58 @@
 <template>
-    <div v-if="getSelected != null">
-        <div>Works</div>
-        <b-input type="date" :value="getEndTime" @change="changeDate" />
-        <div v-if="getWorks == null">
+    <div v-if="getSelected != null">        
+        <b-input type="date" :value="getCurrentTime" @change="changeDate" />
+        <div class="loading" v-if="getWorks == null">
             Loading...
         </div>
-        <div v-if="getWorks != null">
-            <b-row v-for="w in getWorks" v-bind:key="w.id">
-                <b-col>
-                    {{w.id}}
-                </b-col>
-                <b-col>
-                    <b-button @click="remove(w)">-</b-button>
-                </b-col>
-            </b-row>
-        </div>
-        <b-button @click="create()">create</b-button>
-        <b-modal ref="mdlConfirmAdd" title="" @ok="add()">
-            <div role="group">
-                <label for="input-password">Who</label>
-                <b-form-select v-model="worker" :options="getSelected.users" value-field="id" text-field="login" ></b-form-select>
-            </div>
-            <div role="group">
-                <label for="input-password">Done</label>
-                <b-form-select v-model="taskType" :options="getSelected.types" value-field="id" text-field="name"></b-form-select>
-            </div>
-            <div role="group">
-                <label for="input-password">When</label>
-                <b-form-input type="date" v-model="when"></b-form-input>
-            </div>
-        </b-modal>
+        <b-row v-if="days">
+            <b-col v-for="d in days" v-bind:key="d.valueOf()">
+                <p>{{d | formatDate }}</p>
+                <b-card-group deck>
+                     <b-card v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
+                             bg-variant="primary" text-variant="white"  class="text-center">
+                        <b-card-text>{{w.worker.login}}/{{w.type.name}}</b-card-text>
+                        <b-button @click="remove(w)">-</b-button>
+                    </b-card>
+                </b-card-group>   
+            </b-col>
+        </b-row>
+        <CreateWorkButton />       
     </div>
 </template>
 
 <script>
     import {
         default as store,
-        REMOVE_WORK,
-        ADD_WORK,
-        CHANGE_SELECTED_PERIOD,
-        WORKS_UPDATE
+        REMOVE_WORK,        
+        ACTION_CHANGE_DATE
     } from "../stores/index.js";
     import lang from "../lang.js";
     import WorkService from "../services/WorkService.js";
     import DateUtils from "../utils/DateUtils.js";
+    import CreateWorkButton from "./CreateWorkButton";
 
     export default {
         name: 'Works',
         data() {
             var model = {
-                lang: lang,
-                worker: null,
-                taskType: null,
-                when: null
+                lang: lang,               
+                days: null,
+                workByDays: null
             };
             return model;
+        },
+        components: {
+            "CreateWorkButton": CreateWorkButton
         },
         computed: {
             getSelected() {
                 return store.state.selectedHouse;
             },
-            getStartTime() {
-                return store.state.startTime;
-            },
-            getEndTime() {
-                return store.state.endTime;
+            getCurrentTime() {
+                var d = store.state.currentTime;
+                if(d == null)
+                    return null;
+                return DateUtils.formatDateISO(d);
             },
             getLoadingWorks() {
                 return store.state.loadingWorks;
@@ -73,33 +61,29 @@
                 return store.state.works;
             },
         },
+        watch: {
+            getWorks() {                
+                if(store.state.currentTime == null) {
+                    this.$data.days = null;
+                    this.$data.workByDays = {};
+                    return;
+                }
+
+                this.$data.days = DateUtils.build7DayBefore(store.state.currentTime);
+                
+                this.$data.workByDays={};
+                this.$data.days.forEach(d => {
+                    this.$data.workByDays[d.valueOf()] = DateUtils.filterByDay(d, store.state.works, (w)=>new Date(w.date));   
+                });                
+            }
+        },
         methods: {
-            changeDate(e) {
+            changeDate(e) {                
                 var selected = DateUtils.convertInputValue(e);
-                var endTime = DateUtils.addDay(selected, +1).getTime();
-                var startTime = DateUtils.addDay(selected, -7).getTime();
-                console.log(this); 
-                store.commit(CHANGE_SELECTED_PERIOD, selected);
-                WorkService.list(store.state.selectedHouse.id, startTime, endTime)
-                .done(list => {
-                    store.commit(WORKS_UPDATE, list);
-                });
-            },
-            create() {
-                this.$refs['mdlConfirmAdd'].show();
-            },
-            add() {
-                WorkService.create(store.state.selectedHouse.id, {
-                        workerId: this.worker,
-                        taskTypeId: this.taskType,
-                        date: DateUtils.convertInputValue(this.when).getTime()
-                    })
-                    .done((w) => {
-                        store.commit(ADD_WORK, w);
-                    });
-            },
+                this.$store.dispatch(ACTION_CHANGE_DATE, selected);                
+            },           
             remove(w) {
-                WorkService.remove(store.state.selectedHouse.id, w.id)
+                WorkService.remove(store.state.selectedHouse.id, w)
                     .done(() => {
                         store.commit(REMOVE_WORK, w);
                     });

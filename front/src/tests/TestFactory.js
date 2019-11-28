@@ -1,3 +1,5 @@
+import DateUtils from '../utils/DateUtils';
+
 
 export const UserAdmin = {
     id:1, login: "admin"
@@ -32,3 +34,25 @@ export const SampleHouse = {
         TypePutInDishWashing
     ]
 };
+
+export const DATE_2412 = DateUtils.convertInputValue("2019-12-24");
+export const WORKS_2412 = [
+    {
+        id: 1,
+        date: DateUtils.convertInputValue("2019-12-24").valueOf(),
+        worker: UserHugo,
+        type: TypeInstallTable
+    },
+    {
+        id: 2,
+        date: DateUtils.convertInputValue("2019-12-23").valueOf(),
+        worker: UserHugo,
+        type: TypeInstallTable
+    },
+    {
+        id: 3,
+        date: DateUtils.convertInputValue("2019-12-23").valueOf(),
+        worker: UserMarie,
+        type: TypePutInDishWashing
+    }
+];

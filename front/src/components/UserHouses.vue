@@ -1,11 +1,9 @@
 <template>
 	<div>
-	    <ul> 
-			<li v-for="h in getHouses" v-bind:key="h.id" >
-				<p @click="select(h)">{{ h.name }}  ({{h.id}})</p> <b-button @click="remove(h)">-</b-button>				
-			</li>
-		</ul>
-		<b-button @click="create()">{{lang.CreateHouseLabel}}</b-button>
+		<b-dropdown-item v-for="h in getHouses" v-bind:key="h.id" @click="select(h)">
+			{{ h.name }}  ({{h.id}}) <b-button @click="remove(h)">-</b-button>	
+		</b-dropdown-item>
+		<b-dropdown-item  @click="create()">{{lang.CreateHouseLabel}}</b-dropdown-item>
 		<b-modal ref="mdlConfirmRemove" title="" @ok="removeConfirmed()">
 			{{lang.PleaseConfirmRemoveOf}}
 		</b-modal>
@@ -19,14 +17,13 @@
 	        	  ></b-form-input>
     	 	</div>
 		</b-modal>
-		
 	</div>
 </template>
 
 <script>
 import HouseService from "../services/HouseService.js";
 import lang from "../lang.js";
-import {default as store, SELECT_HOUSE, UPDATE_HOUSES, REMOVE_HOUSE} from "../stores/index.js";
+import {default as store, SELECT_HOUSE, UPDATE_HOUSES, REMOVE_HOUSE, ACTION_CHANGE_DATE} from "../stores/index.js";
 
 export default {
   name: 'UserHouses',
@@ -83,6 +80,7 @@ export default {
 	  },
 	  select(h) {
 		  store.commit(SELECT_HOUSE, h);
+		  store.dispatch(ACTION_CHANGE_DATE, store.state.currentTime);
 	  }
   }
 }

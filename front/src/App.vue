@@ -1,6 +1,6 @@
 <template>
-  <div id="app">
-  	<b-navbar toggleable="lg" type="dark" variant="info">
+  <div id="app">    
+  	<b-navbar id="bar" toggleable="lg" type="dark" variant="info">
     	<b-navbar-brand href="#">House Work </b-navbar-brand> 
     	 <b-navbar-nav class="ml-auto">
     	  	<b-nav-item-dropdown right>	
@@ -8,12 +8,14 @@
 					<LoginStatus />
 				</template>
 				<b-dropdown-item href="#">Accueil</b-dropdown-item>
-          		<b-dropdown-item href="#/">Déconnexion</b-dropdown-item>
+        <UserHouses />
+        <b-dropdown-item href="#/">Déconnexion</b-dropdown-item>
 			</b-nav-item-dropdown>
     	</b-navbar-nav>
     </b-navbar>
-  	   	
-    <router-view></router-view>
+  	<div id="main">   	
+      <router-view></router-view>
+    </div>
   </div> 
 </template> 
 
@@ -25,6 +27,7 @@ import Register from './components/Register.vue'
 import PostRegister from './components/PostRegister.vue'
 import UserBoard from './components/UserBoard.vue'
 import LoginStatus from './components/LoginStatus.vue'
+import UserHouses from './components/UserHouses.vue'
 import store from './stores';
 
 console.log(store);
@@ -44,7 +47,8 @@ const router = new VueRouter({
 export default {
   name: 'app',
   components: {
-    'LoginStatus': LoginStatus  
+    'LoginStatus': LoginStatus,
+    'UserHouses': UserHouses  
   },
   router,
   store
@@ -53,6 +57,13 @@ export default {
 
 <style>
 #app {
-    
+  
+}
+
+#main {
+  position:absolute;
+  top:70px;
+  left:0px;
+  right:0px;
 }
 </style>

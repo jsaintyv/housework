@@ -1,5 +1,7 @@
 import Vue from 'vue';
 import Vuex from 'vuex';
+import DateUtils from '../utils/DateUtils';
+import WorkService from "../services/WorkService.js";
 
 Vue.use(Vuex);
 
@@ -14,6 +16,8 @@ export const WORKS_UPDATE = "WORKS_UPDATE";
 export const ADD_WORK = "ADD_WORK";
 export const REMOVE_WORK = "REMOVE_WORK";
 
+export const ACTION_CHANGE_DATE = "CHANGE_DATE";
+
 export default new Vuex.Store({
     state: {
         currentUser: null,
@@ -21,7 +25,7 @@ export default new Vuex.Store({
         selectedHouse: null,
         currentTime: new Date(),
         works: null
-    },
+    },    
     mutations: { 
         [CONNECTED] (state, user) {
             state.currentUser = user;
@@ -35,6 +39,9 @@ export default new Vuex.Store({
         [SELECT_HOUSE] (state, house) {
             state.selectedHouse = house;
             state.works = null;
+            if(state.currentTime == null) {
+                state.currentTime = DateUtils.removeTime(new Date());
+            }
         },
         [REMOVE_HOUSE] (state, removed) {
             state.houses = state.houses.filter((h)=>h.id != removed.id);
@@ -56,9 +63,33 @@ export default new Vuex.Store({
             if(state.works != null)
                 state.works.push(work);
         },
-        [REMOVE_WORK] (state, workId) {
+        [REMOVE_WORK] (state, work) {
             if(state.works != null)
-                state.works = state.works.filter((w)=>w.id == workId);
+                state.works = state.works.filter((w)=>w.id != work.id);
+        }
+    },
+    actions: {
+        /**
+         * Change date
+         * @param {Vuex.Store} store
+         * @param {Date} selected
+         */
+        [ACTION_CHANGE_DATE] (store, selected) {
+            if(selected == null) {
+                selected = store.state.currentTime;
+                if(selected == null) {
+                    selected = DateUtils.removeTime(new Date());
+                }
+            }
+            
+            var endTime = DateUtils.addDay(selected, +1).getTime();
+            var startTime = DateUtils.addDay(selected, -7).getTime();            
+            store.commit(CHANGE_SELECTED_PERIOD, selected);
+            WorkService.list(store.state.selectedHouse.id, startTime, endTime)
+            .done(list => {
+                store.commit(WORKS_UPDATE, list);
+            });
         }
     }
+
 });
