@@ -1,22 +1,24 @@
 <template>
-    <div v-if="getSelected != null">        
-        <b-input type="date" :value="getCurrentTime" @change="changeDate" />
+    <div v-if="getSelected != null">
+        <b-row> 
+            <b-col><b-input type="date" :value="getCurrentTime" @change="changeDate" /></b-col>
+            <b-col><CreateWorkButton /></b-col>
+        </b-row>
         <div class="loading" v-if="getWorks == null">
             Loading...
         </div>
         <b-row v-if="days">
-            <b-col v-for="d in days" v-bind:key="d.valueOf()">
+            <b-col class="day" v-for="d in days" v-bind:key="d.valueOf()">
                 <p>{{d | formatDate }}</p>
-                <b-card-group deck>
-                     <b-card v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
-                             bg-variant="primary" text-variant="white"  class="text-center">
-                        <b-card-text>{{w.worker.login}}/{{w.type.name}}</b-card-text>
-                        <b-button @click="remove(w)">-</b-button>
-                    </b-card>
-                </b-card-group>   
+                
+                <div class="work" v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
+                            bg-variant="primary" text-variant="white">
+                    <p>{{w.worker.login}}</p>
+                    <p>{{w.type.name}}</p>
+                    <p class="topright" @click="remove(w)"><span class="material-icons">clear</span></p>
+                </div>   
             </b-col>
-        </b-row>
-        <CreateWorkButton />       
+        </b-row>       
     </div>
 </template>
 
@@ -94,4 +96,33 @@
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+.work {
+    position:relative; /* Allow absolute for cross */
+    border:1px solid;
+    border-radius: 5px;
+    padding-top: 7px;
+    padding-right:5px;
+    padding-left:5px;
+    border-color: #e0e0e0;
+}
+
+.topright {
+    position: absolute;
+    right:2px;
+    top:-2px;
+}
+
+@media (min-width:768px) {
+    .day {
+        flex: 0 0 14.28%;
+    }
+}
+
+@media (max-width:767px) {
+    .day {
+        flex: 0 0 50%;
+    }
+}
+
 </style>

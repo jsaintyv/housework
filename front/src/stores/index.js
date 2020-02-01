@@ -2,9 +2,12 @@ import Vue from 'vue';
 import Vuex from 'vuex';
 import DateUtils from '../utils/DateUtils';
 import WorkService from "../services/WorkService.js";
+import HouseService from "../services/HouseService.js";
+import UserService from "../services/UserService.js";
 
 Vue.use(Vuex);
 
+export const DISCONNECTED = "DISCONNECTED";
 export const CONNECTED = "CONNECTED";
 export const UPDATE_HOUSES = "UPDATE_HOUSES";
 export const REMOVE_HOUSE = "REMOVE_HOUSE";
@@ -17,9 +20,17 @@ export const ADD_WORK = "ADD_WORK";
 export const REMOVE_WORK = "REMOVE_WORK";
 
 export const ACTION_CHANGE_DATE = "CHANGE_DATE";
+export const ACTION_SELECT_HOUSE_ID = "SELECT_HOUSE_ID";
+export const ACTION_CHECK_CONNECTED = "CHECK_CONNECTED";
+
+export const STATUS_CHECKING = 0;
+export const STATUS_DISCONNECTED = 1;
+export const STATUS_CONNECTED = 2;
+
 
 export default new Vuex.Store({
     state: {
+        stateConnected: STATUS_CHECKING,
         currentUser: null,
         houses: [],
         selectedHouse: null,
@@ -28,7 +39,14 @@ export default new Vuex.Store({
     },    
     mutations: { 
         [CONNECTED] (state, user) {
+            console.log("Connected", user);
+            state.stateConnected = STATUS_CONNECTED;
             state.currentUser = user;
+        },
+        [DISCONNECTED] (state) {
+            console.log("Disconnected");
+            state.stateConnected = STATUS_DISCONNECTED;
+            state.currentUser = null;
         },
         [UPDATE_HOUSES] (state, houses) {
             state.houses = houses;
@@ -89,6 +107,52 @@ export default new Vuex.Store({
             .done(list => {
                 store.commit(WORKS_UPDATE, list);
             });
+        },
+        [ACTION_CHECK_CONNECTED] (store) {
+            UserService
+            .currentUser()
+            .done((u)=> {
+                if(u.id) {
+                    store.commit(CONNECTED, u);
+                } else {
+                    store.commit(DISCONNECTED);
+                }
+            })
+        },
+        /**
+         * Change selected house Id
+         * @param {Vuex.Store} store
+         * @param {Int} houseId
+         */
+        [ACTION_SELECT_HOUSE_ID] (store, houseId) {
+            if(store.state.selectedHouse && store.state.selectedHouse.id == houseId) {
+                return; // do nothing
+            }
+
+            var commitHouseCallback = ()=> {
+                console.log("Seek in ", store.state.houses, houseId);
+                store.state.houses.filter((h)=> {
+                    if(h.id == houseId) {
+                        console.log("HouseId", houseId);
+                        store.commit(SELECT_HOUSE, h);
+                    }
+                });
+            };
+
+            
+            console.log(store.state.houses);
+            if(! store.state.houses || store.state.houses.length == 0) {
+                console.log("Load houses....");
+                HouseService
+                .listOwned()
+                .done((l)=>{
+                    console.log("Loaded", l);
+                    store.commit(UPDATE_HOUSES, l);
+                    commitHouseCallback();
+                });
+            } else {
+                commitHouseCallback();
+            }
         }
     }
 

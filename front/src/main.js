@@ -1,4 +1,5 @@
 import '@babel/polyfill'
+import 'material-design-icons/iconfont/material-icons.css'
 import 'mutationobserver-shim'
 import Vue from 'vue'
 import VueRouter from 'vue-router'

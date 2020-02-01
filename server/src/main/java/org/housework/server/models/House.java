@@ -35,7 +35,6 @@ public class House {
     @JoinColumn(name = "house_id")
     private Set<TaskType> types = new HashSet<TaskType>();
     
-    
     @ManyToMany(
     fetch = FetchType.EAGER,
    	cascade = {
