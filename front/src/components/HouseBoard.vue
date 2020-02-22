@@ -11,15 +11,14 @@
 
 <script>
   import Works from "./Works.vue";
-  import {
-    default as store
-  } from "../stores/index.js";
 
   export default {
     name: 'HouseBoard',
     computed: {
         getSelected() {
-            return store.state.selectedHouse;
+            console.log("getSelected", this.$store.state.selectedHouse);
+
+            return this.$store.state.selectedHouse;
         }
     },
     components: {

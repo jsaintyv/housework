@@ -75,8 +75,10 @@
                 
                 this.$data.workByDays={};
                 this.$data.days.forEach(d => {
-                    this.$data.workByDays[d.valueOf()] = DateUtils.filterByDay(d, store.state.works, (w)=>new Date(w.date));   
-                });                
+                    this.$data.workByDays[d.valueOf()] = DateUtils.filterByDay(d, store.state.works, (w)=>{
+                        return new Date(w.date);
+                    });
+                });
             }
         },
         methods: {

@@ -50,11 +50,14 @@ export default new Vuex.Store({
         },
         [UPDATE_HOUSES] (state, houses) {
             state.houses = houses;
-            if(houses.indexOf(state.selectedHouse) < 0) {
+
+            if(state.selectedHouse != null && state.houses.filter((h)=>h.id == state.selectedHouse.id).length ==0) {
                 state.selectedHouse = null;
+
             }
         },
         [SELECT_HOUSE] (state, house) {
+            console.log(SELECT_HOUSE + " -> ", house);
             state.selectedHouse = house;
             state.works = null;
             if(state.currentTime == null) {
@@ -75,6 +78,7 @@ export default new Vuex.Store({
             state.works = null;
         },
         [WORKS_UPDATE] (state, works) {
+            console.log(works);
             state.works = works;
         },
         [ADD_WORK] (state, work) {
@@ -93,13 +97,14 @@ export default new Vuex.Store({
          * @param {Date} selected
          */
         [ACTION_CHANGE_DATE] (store, selected) {
+            console.log("ACTION_CHANGE_DATE");
             if(selected == null) {
                 selected = store.state.currentTime;
                 if(selected == null) {
                     selected = DateUtils.removeTime(new Date());
                 }
             }
-            
+
             var endTime = DateUtils.addDay(selected, +1).getTime();
             var startTime = DateUtils.addDay(selected, -7).getTime();            
             store.commit(CHANGE_SELECTED_PERIOD, selected);
@@ -135,6 +140,8 @@ export default new Vuex.Store({
                     if(h.id == houseId) {
                         console.log("HouseId", houseId);
                         store.commit(SELECT_HOUSE, h);
+                        store.dispatch(ACTION_CHANGE_DATE);
+
                     }
                 });
             };

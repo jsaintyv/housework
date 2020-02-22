@@ -79,6 +79,9 @@ class DateUtils {
      * @returns {Array<Object>} new object array
      */
     filterByDay(filterDay, array, getterDate) {
+        if(array == null) {
+            return [];
+        }
         return array.filter((o)=>this.sameDay(filterDay, getterDate(o)));
     }
 

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<b-dropdown-item v-for="h in getHouses" v-bind:key="h.id" @click="select(h)">
-			{{ h.name }}  ({{h.id}}) <b-button @click="remove(h)">-</b-button>	
+			<router-link :to="{name: 'houseBoard', params: {houseId: h.id}}">{{h.name}} </router-link> <b-button @click="remove(h)">-</b-button>	
 		</b-dropdown-item>
 		<b-dropdown-item  @click="create()">{{lang.CreateHouseLabel}}</b-dropdown-item>
 		<b-modal ref="mdlConfirmRemove" title="" @ok="removeConfirmed()">
@@ -42,9 +42,12 @@ export default {
       this.loading();
   },
   computed: {
-	  getHouses() {
-		  return store.state.houses;
-	  }
+	getHouses() {
+		return store.state.houses;
+	},
+	getSelected() {
+		return store.state.selectedHouse;
+	}
   },
   methods: {
       loading() {
