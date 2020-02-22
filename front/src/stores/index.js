@@ -117,7 +117,7 @@ export default new Vuex.Store({
             UserService
             .currentUser()
             .done((u)=> {
-                if(u.id) {
+                if(u.login) {
                     store.commit(CONNECTED, u);
                 } else {
                     store.commit(DISCONNECTED);
