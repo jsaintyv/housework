@@ -18,10 +18,12 @@ export const CHANGE_SELECTED_PERIOD = "CHANGE_SELECTED_PERIOD";
 export const WORKS_UPDATE = "WORKS_UPDATE";
 export const ADD_WORK = "ADD_WORK";
 export const REMOVE_WORK = "REMOVE_WORK";
+export const CHANGE_SCORES_BY_USER = "CHANGE_SCORES_BY_USER";
 
 export const ACTION_CHANGE_DATE = "CHANGE_DATE";
 export const ACTION_SELECT_HOUSE_ID = "SELECT_HOUSE_ID";
 export const ACTION_CHECK_CONNECTED = "CHECK_CONNECTED";
+export const ACTION_LOAD_SCORES_BY_USER = "LOAD_SCORES_BY_USER";
 
 export const STATUS_CHECKING = 0;
 export const STATUS_DISCONNECTED = 1;
@@ -35,7 +37,8 @@ export default new Vuex.Store({
         houses: [],
         selectedHouse: null,
         currentTime: new Date(),
-        works: null
+        works: null,
+        scoresByUser: []
     },    
     mutations: { 
         [CONNECTED] (state, user) {
@@ -88,6 +91,9 @@ export default new Vuex.Store({
         [REMOVE_WORK] (state, work) {
             if(state.works != null)
                 state.works = state.works.filter((w)=>w.id != work.id);
+        },
+        [CHANGE_SCORES_BY_USER] (state, scoresByUser) {
+            state.scoresByUser = scoresByUser;
         }
     },
     actions: {
@@ -160,6 +166,16 @@ export default new Vuex.Store({
             } else {
                 commitHouseCallback();
             }
+        },
+        [ACTION_LOAD_SCORES_BY_USER] (store) {
+            if(!store.state.selectedHouse) {
+                return;
+            }
+
+            HouseService.getScoresByUser(store.state.selectedHouse.id)
+            .done((l)=> {
+                store.commit(CHANGE_SCORES_BY_USER, l);
+            });
         }
     }
 

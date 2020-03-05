@@ -9,7 +9,7 @@
                 {{t.name}}
             </b-col>
             <b-col>
-                {{t.value}}
+                <b-form-input id="input-" v-model="t.value" type="number" required @change="update(t)"></b-form-input>                
             </b-col>
             <b-col>
                 <b-form-input id="input-" v-model="t.name" type="text" required @change="update(t)"></b-form-input>

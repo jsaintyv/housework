@@ -49,7 +49,16 @@ class HouseService {
     invitUser(house, login) {
         return jQuery.post("/api/house/register/" + house.id, {"login": login});
     }
+
+    /**
+     * Get scores by user
+     * @return deffered
+     */
+    getScoresByUser(houseId) {
+        return jQuery.get("/api/work/scoresByUser/" + houseId);      
+    }
 }
+
 
 var instance = new HouseService();
 export default instance;
