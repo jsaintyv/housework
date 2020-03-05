@@ -10,6 +10,8 @@ import org.housework.server.models.TaskType;
 import org.housework.server.models.TaskTypeRepository;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
+import org.housework.server.models.ValueByUser;
+import org.housework.server.models.ValueByUserService;
 import org.housework.server.models.Work;
 import org.housework.server.models.WorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +40,9 @@ public class WorkController {
 
 	@Autowired
 	UserSecurityService userSecurityService;
+	
+	@Autowired
+	ValueByUserService valueByUserService;
 
 	
 	@PostMapping("/api/work/create/{houseId}")
@@ -71,6 +76,13 @@ public class WorkController {
 	public ResponseEntity<List<Work>> insert(@PathVariable int houseId, @PathVariable long start, @PathVariable long end) {
 		return HouseRightUtils.checkRightOnHouse(houseRepository, houseId, (house)-> {
 			return new ResponseEntity<>(workRepository.findBy(new Date(start), new Date(end), house), HttpStatus.OK);
+		});
+	}
+	
+	@GetMapping("/api/work/scoresByUser/{houseId}")
+	public ResponseEntity<List<ValueByUser>> scoreByUser(@PathVariable int houseId) {
+		return HouseRightUtils.checkRightOnHouse(houseRepository, houseId, (house)-> {
+			return new ResponseEntity<>(valueByUserService.list(houseId), HttpStatus.OK);
 		});
 	}
 	

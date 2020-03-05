@@ -21,14 +21,13 @@ class WorkService {
     list(houseId, startTime, endTime) {
         return query.get("/api/work/list/" + houseId + "/" + startTime + "/" + endTime);
     }
-
-      
+  
     /**
      * @return deffered
      */
     remove(houseId, work) {
         return query.delete("/api/work/remove/" + houseId + "/" + work.id);      
-    }
+    }    
 }
 
 var instance = new WorkService();

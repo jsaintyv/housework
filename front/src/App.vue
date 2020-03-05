@@ -37,7 +37,7 @@ import LoginStatus from './components/LoginStatus.vue'
 import UserHouses from './components/UserHouses.vue'
 import MenuEntriesHouse from './components/MenuEntriesHouse.vue'
 import {mapState} from 'vuex'
-import {default as store, ACTION_SELECT_HOUSE_ID, ACTION_CHECK_CONNECTED} from './stores';
+import {default as store, ACTION_SELECT_HOUSE_ID, ACTION_CHECK_CONNECTED, STATUS_DISCONNECTED} from './stores';
 
 const needConnectedMap = {
   "houseBoard": true,
@@ -82,11 +82,8 @@ export default {
   store,
   computed: mapState(['stateConnected']),
   watch: {
-    stateConnected(n, o) {
-      console.log('stateConnected', n, o);
-      console.log(this.$route);
-      if(o == 0 && this.$route.matched.filter((p)=>!needConnectedMap[p.name]).length == 0) {
-        console.log("Reroute /");
+    stateConnected(newStat) {
+      if(newStat == STATUS_DISCONNECTED && this.$route.matched.filter((p)=>!needConnectedMap[p.name]).length == 0) {
         // All path need to be connected. Reroute on login
         this.$router.push('/');
       } 
