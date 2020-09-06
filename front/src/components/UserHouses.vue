@@ -23,7 +23,7 @@
 <script>
 import HouseService from "../services/HouseService.js";
 import lang from "../lang.js";
-import {default as store, SELECT_HOUSE, UPDATE_HOUSES, REMOVE_HOUSE, ACTION_CHANGE_DATE} from "../stores/index.js";
+import {default as store, SELECT_HOUSE, ACTION_LOAD_HOUSES, REMOVE_HOUSE, ACTION_CHANGE_DATE} from "../stores/index.js";
 
 export default {
   name: 'UserHouses',
@@ -39,7 +39,7 @@ export default {
     return model;
   },
   created() {
-      this.loading();
+      this.$store.dispatch(ACTION_LOAD_HOUSES);
   },
   computed: {
 	getHouses() {
@@ -51,10 +51,7 @@ export default {
   },
   methods: {
       loading() {
-          HouseService.listOwned()
-          	.done((l)=>{
-				store.commit(UPDATE_HOUSES, l);
-          	});
+          
       },
       create() {
           this.$refs['mdlConfirmAdd'].show();
@@ -62,8 +59,8 @@ export default {
       createConfirmed() {
        	HouseService
        		.create({name: this.newName})
-       		.done((h)=> {
-			    store.commit(UPDATE_HOUSES, [...store.state.houses, h]);
+       		.done(()=> {
+			    this.$store.dispatch(ACTION_LOAD_HOUSES);
        		    this.$bvToast.toast('Add success', {
        		        variant: 'success',
        		        solid: true

@@ -15,5 +15,9 @@ public class UserFront {
 
 	public String getRole() {
 		return user.getRole();
-	}	
+	}
+
+	public int getId() {
+		return user.getId();
+	}		
 }

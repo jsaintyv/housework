@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -81,21 +82,23 @@ public class UserController {
 	}
 
 	@GetMapping("/confirmRegister")
-	public  ResponseEntity<Boolean>  register(String login, long registeringCode) {
+	public  RedirectView  register(String login, long registeringCode) {
 		
 		if(!(login.contains("@") && login.contains("."))) {
-			return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
+			return new RedirectView("/registerFailed.html");
 		}
 		
 		User user = userRepository.findByLogin(login);
 		if(user == null || user.getRegisteringCode() != registeringCode) {
-			return new ResponseEntity<>(Boolean.FALSE, HttpStatus.FORBIDDEN);
+			return new RedirectView("/registerFailed.html");
 		}
 		
 		user.setEnabled(true);
 		userRepository.save(user);
 		
 		LOG.info(login + " is now Ok !");
-		return ResponseEntity.ok(Boolean.TRUE);
+
+
+		return new RedirectView("/registerCompleted.html");
 	}
 }

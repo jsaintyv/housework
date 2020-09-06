@@ -1,7 +1,13 @@
 package org.housework.server.controllers;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.housework.server.UserSecurityService;
 import org.housework.server.front.HouseForm;
 import org.housework.server.mail.MailService;
@@ -21,9 +27,11 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 public class HouseController {
+	private Log LOG = LogFactory.getLog(HouseController.class);
 	@Autowired
 	HouseRepository houseRepository;
 	
@@ -56,16 +64,23 @@ public class HouseController {
 	}
 	
 	@GetMapping("/api/house/listOwned")
-	public ResponseEntity<List<House>>  listOwned() {		
-		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+	public ResponseEntity<List<House>>  listOwned() {
+		Object auth = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if((auth instanceof User)) {
+			User user = (User) auth;		
+			return ResponseEntity.ok(houseRepository.findByOwner(user));
+		}
 		
-		return ResponseEntity.ok(houseRepository.findByOwner(user));
+		return ResponseEntity.ok(new ArrayList<House>());
+		
 	}
 	
 	@GetMapping("/api/house/listAvailables")
 	public ResponseEntity<List<House>>  listAvailables() {		
 		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		return ResponseEntity.ok(houseRepository.findByUsers(user.getId()));
+		Set<House> houses = new HashSet<>(houseRepository.findByUsers(user.getId()));
+		houses.addAll(houseRepository.findByOwner(user));
+		return ResponseEntity.ok(new ArrayList<House>(houses));
 	}
 		
 	@PostMapping("/api/house/update/{id}")
@@ -112,19 +127,19 @@ public class HouseController {
 	}
 	
 	@GetMapping("/confirmRegisteringhouse/{registrationId}/{workerId}/{secret}")
-	public ResponseEntity<House>  register(@PathVariable Integer registrationId, @PathVariable Integer workerId, @PathVariable Long secret) {
+	public RedirectView  register(@PathVariable Integer registrationId, @PathVariable Integer workerId, @PathVariable Long secret) {
 		System.out.println(registrationId);
 		System.out.println(workerId);
 		System.out.println(secret);
 		PendingRegistration registration =  pendingRegistrationRepository.findById(registrationId).orElse(null);
 		if(registration == null) {
-			return  new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+			return new RedirectView("/registerFailed.html");
 		}
 		
 		System.out.println("Secret:" + registration.getSecret()); 
 		 
 		if(registration.getSecret().longValue() != secret.longValue()) {
-			return  new ResponseEntity<>(HttpStatus.FORBIDDEN);
+			return new RedirectView("/registerFailed.html");
 		}
 
 		System.out.println("Same secret"); 
@@ -132,6 +147,6 @@ public class HouseController {
 		registration.getTarget().getUsers().add(registration.getWorker());
 		houseRepository.save(registration.getTarget());
 		
-		return new ResponseEntity<>(registration.getTarget(), HttpStatus.ACCEPTED);
+		return new RedirectView("/registerCompleted.html");
 	}
 }

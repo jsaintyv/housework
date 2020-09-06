@@ -9,14 +9,14 @@
                 {{t.name}}
             </b-col>
             <b-col>
-                <b-form-input id="input-" v-model="t.value" type="number" required @change="update(t)"></b-form-input>                
+                <b-form-input id="input-" :readonly="!getSelected.owned" v-model="t.value" type="number" required @change="update(t)"></b-form-input>                
             </b-col>
             <b-col>
-                <b-form-input id="input-" v-model="t.name" type="text" required @change="update(t)"></b-form-input>
+                <b-form-input id="input-" :readonly="!getSelected.owned" v-model="t.name" type="text" required @change="update(t)"></b-form-input>
             </b-col>
-            <b-col><b-button @click="remove(t)">-</b-button></b-col>
+            <b-col><b-button v-if="getSelected.owned" @click="remove(t)">-</b-button></b-col>
         </b-row>
-        <b-button @click="create()">{{lang.CreateHouseLabel}}</b-button>
+        <b-button v-if="getSelected.owned" @click="create()">{{$lang.CreateTaskType}}</b-button>
     </div>
 </template>
 
@@ -26,17 +26,11 @@
         ADD_TASK_TYPE,
         REMOVE_TASK_TYPE
     } from "../stores/index.js";
-    import lang from "../lang.js";
+    
     import TaskTypeService from "../services/TaskTypeService.js";
 
     export default {
         name: 'TaskTypes',
-        data() {
-            var model = {
-                lang: lang
-            };
-            return model;
-        },
         computed: {
             getSelected() {
                 return store.state.selectedHouse;

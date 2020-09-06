@@ -5,9 +5,9 @@
             <b-col>
                 {{u.login}}
             </b-col>
-            <b-col><b-button @click="remove(u)">-</b-button></b-col>
+            <b-col><b-button v-if="getSelected.owned" @click="remove(u)">-</b-button></b-col>
         </b-row>
-        <b-row>
+        <b-row v-if="getSelected.owned">
             <b-col>
                 <b-form-input id="input-" v-model="newWorker" type="text" required></b-form-input>
             </b-col>
@@ -37,7 +37,8 @@
         computed: {
             getSelected() {
                 return store.state.selectedHouse;
-            }
+            },
+            
         },
         methods: {
             register() {

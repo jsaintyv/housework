@@ -1,24 +1,20 @@
 <template>
-    <em>{{login}}</em>
+    <em>{{getLogin}}</em>
 </template>
 
 <script>
-import UserService from "../services/UserService.js";
-import lang from "../lang.js";
+import {ACTION_CHECK_CONNECTED} from '../stores/index'
 
 export default {  
   name: "LoginStatus",
-  data() {
-    var r = {
-        lang: lang,
-        login: ""
-    };   
-    UserService
-      .currentUser()
-      .done((u)=>r.login=u.login);  
-    return r; 
+  data() {    
+    console.log(this.$lang);
+    this.$store.dispatch(ACTION_CHECK_CONNECTED);
   },
-  methods: {      
+ computed: {
+    getLogin() {
+      return this.$store.state.currentUser ? this.$store.state.currentUser.login : "";
+    }
   }
 }
 </script>

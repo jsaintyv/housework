@@ -32,7 +32,7 @@
         data() {
             var model = {
                 lang: lang,
-                worker: null,
+                worker: this.$store.state.currentUser.id,
                 taskType: null,
                 when: null,
             };

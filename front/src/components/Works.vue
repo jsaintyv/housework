@@ -15,7 +15,7 @@
                             bg-variant="primary" text-variant="white">
                     <p>{{w.worker.login}}</p>
                     <p>{{w.type.name}}</p>
-                    <p class="topright" @click="remove(w)"><span class="material-icons">clear</span></p>
+                    <p class="topright" v-if="canRemove(w)"  @click="remove(w)"><span class="material-icons">clear</span></p>
                 </div>   
             </b-col>
         </b-row>       
@@ -91,6 +91,9 @@
                     .done(() => {
                         store.commit(REMOVE_WORK, w);
                     });
+            },
+            canRemove(w) {
+                return this.$store.state.selectedHouse.owned||(w.worker.id === this.$store.state.currentUser.id)
             }
         }
     }
