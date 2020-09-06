@@ -55,15 +55,12 @@ public class SpringSecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .usernameParameter("login")
                 .passwordParameter("password")
                 .defaultSuccessUrl("/api/user/current", true)
-                .failureUrl("/rejected");
-                
-                /*
+                .failureUrl("/rejected")                                
                 .and()
                 .logout()
-                .logoutUrl("/perform_logout")
-                .deleteCookies("JSESSIONID")
-                .logoutSuccessHandler(logoutSuccessHandler());
-                */
+                .logoutUrl("/logout")
+                .deleteCookies("JSESSIONID");
+                
     } 
     
     

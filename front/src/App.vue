@@ -1,26 +1,26 @@
 <template>
-  <div id="app">    
-  	<b-navbar id="bar" toggleable="lg" type="dark" variant="info">
-    	<b-navbar-brand href="#">House Work</b-navbar-brand> 
-    	 <b-navbar-nav class="ml-auto">
-    	  	<b-nav-item-dropdown right>	
-    	  		<template v-slot:button-content>
-					<LoginStatus />
-				</template>
-				<b-dropdown-item href="#">Accueil</b-dropdown-item>
-        <UserHouses />
-        <b-dropdown-divider></b-dropdown-divider>
-        <MenuEntriesHouse />
-        <b-dropdown-divider></b-dropdown-divider>
-        <b-dropdown-item href="#/">Déconnexion</b-dropdown-item>
-			</b-nav-item-dropdown>
-    	</b-navbar-nav>
+  <div id="app">
+    <b-navbar id="bar" toggleable="lg" type="dark" variant="info">
+      <b-navbar-brand href="#">House Work</b-navbar-brand>
+      <b-navbar-nav class="ml-auto">
+        <b-nav-item-dropdown right v-if="getConnected">
+          <template v-slot:button-content>
+            <LoginStatus />
+          </template>
+          <b-dropdown-item href="#">Accueil</b-dropdown-item>
+          <UserHouses />
+          <b-dropdown-divider></b-dropdown-divider>
+          <MenuEntriesHouse />
+          <b-dropdown-divider></b-dropdown-divider>
+          <b-dropdown-item href="/logout#">Déconnexion</b-dropdown-item>
+        </b-nav-item-dropdown>
+      </b-navbar-nav>
     </b-navbar>
-  	<div id="main">   	
+    <div id="main">
       <router-view></router-view>
     </div>
-  </div> 
-</template> 
+  </div>
+</template>
 
 <script>
 
@@ -37,7 +37,7 @@ import LoginStatus from './components/LoginStatus.vue'
 import UserHouses from './components/UserHouses.vue'
 import MenuEntriesHouse from './components/MenuEntriesHouse.vue'
 import {mapState} from 'vuex'
-import {default as store, ACTION_SELECT_HOUSE_ID, ACTION_CHECK_CONNECTED, STATUS_DISCONNECTED} from './stores';
+import {default as store, ACTION_SELECT_HOUSE_ID, ACTION_CHECK_CONNECTED, STATUS_DISCONNECTED, STATUS_CONNECTED} from './stores';
 
 const needConnectedMap = {
   "houseBoard": true,
@@ -80,7 +80,11 @@ export default {
   },
   router,
   store,
-  computed: mapState(['stateConnected']),
+  computed: {...mapState(['stateConnected']),
+    getConnected() {
+      return this.$store.state.stateConnected == STATUS_CONNECTED;
+    }
+  },
   watch: {
     stateConnected(newStat) {
       if(newStat == STATUS_DISCONNECTED && this.$route.matched.filter((p)=>!needConnectedMap[p.name]).length == 0) {
@@ -108,7 +112,8 @@ export default {
 #main {
   position:absolute;
   top:70px;
-  left:0px;
-  right:0px;
+  left:10px;
+  right:10px;
+  bottom:10px;
 }
 </style>

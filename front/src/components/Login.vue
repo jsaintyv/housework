@@ -30,6 +30,7 @@
 
 <script>
 import UserService from "../services/UserService.js";
+import {CONNECTED, ACTION_LOAD_HOUSES} from "../stores/index"
 import lang from "../lang.js";
 
 export default {
@@ -47,10 +48,13 @@ export default {
          UserService
          	.login(this.login, this.password)
          	.done((r)=> {
+
+             this.$store.commit(CONNECTED, r);
 				console.log(r);
-				
+				  this.$store.dispatch(ACTION_LOAD_HOUSES);
 				if(r != false) {
-					this.$router.push('/board');
+          this.$router.push('/board');
+          
 				} else {
 				    alert("Error");
 				}

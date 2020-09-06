@@ -24,6 +24,7 @@ export const ACTION_CHANGE_DATE = "CHANGE_DATE";
 export const ACTION_SELECT_HOUSE_ID = "SELECT_HOUSE_ID";
 export const ACTION_CHECK_CONNECTED = "CHECK_CONNECTED";
 export const ACTION_LOAD_SCORES_BY_USER = "LOAD_SCORES_BY_USER";
+export const ACTION_LOAD_HOUSES = "ACTION_LOAD_HOUSES";
 
 export const STATUS_CHECKING = 0;
 export const STATUS_DISCONNECTED = 1;
@@ -39,12 +40,14 @@ export default new Vuex.Store({
         currentTime: new Date(),
         works: null,
         scoresByUser: []
-    },    
+    },       
     mutations: { 
         [CONNECTED] (state, user) {
             console.log("Connected", user);
+            
+
             state.stateConnected = STATUS_CONNECTED;
-            state.currentUser = user;
+            state.currentUser = {...user};
         },
         [DISCONNECTED] (state) {
             console.log("Disconnected");
@@ -52,6 +55,10 @@ export default new Vuex.Store({
             state.currentUser = null;
         },
         [UPDATE_HOUSES] (state, houses) {
+            houses.forEach((h)=> {
+                h.owned = (state.currentUser.id === h.owner.id);
+            });
+
             state.houses = houses;
 
             if(state.selectedHouse != null && state.houses.filter((h)=>h.id == state.selectedHouse.id).length ==0) {
@@ -61,6 +68,7 @@ export default new Vuex.Store({
         },
         [SELECT_HOUSE] (state, house) {
             console.log(SELECT_HOUSE + " -> ", house);
+            house.owned = (state.currentUser.id === house.owner.id);            
             state.selectedHouse = house;
             state.works = null;
             if(state.currentTime == null) {
@@ -130,6 +138,17 @@ export default new Vuex.Store({
                 }
             })
         },
+        [ACTION_LOAD_HOUSES] (store, optionalCallAfter) {
+            HouseService
+                .listAvailables()
+                .done((l)=>{
+                    console.log("Loaded", l);
+                    store.commit(UPDATE_HOUSES, l);
+                    if(optionalCallAfter) {
+                        optionalCallAfter();
+                    }
+                });
+        },
         /**
          * Change selected house Id
          * @param {Vuex.Store} store
@@ -155,14 +174,7 @@ export default new Vuex.Store({
             
             console.log(store.state.houses);
             if(! store.state.houses || store.state.houses.length == 0) {
-                console.log("Load houses....");
-                HouseService
-                .listOwned()
-                .done((l)=>{
-                    console.log("Loaded", l);
-                    store.commit(UPDATE_HOUSES, l);
-                    commitHouseCallback();
-                });
+                store.dispatch(ACTION_LOAD_HOUSES, commitHouseCallback);                
             } else {
                 commitHouseCallback();
             }
