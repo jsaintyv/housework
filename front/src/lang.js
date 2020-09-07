@@ -10,6 +10,10 @@ var fr = {
     PostRegisterLabel: "Nous vous avons envoyé un e-mail avec un lien. Veuillez cliquer sur ce lien pour confirmer votre inscription",
     CreateHouseLabel: "Ajouter",
     CreateTaskType: "Ajouter",
+    CreateWork: "Ajouter",
+    CreateWho: "Qui",
+    CreateTask: "Tâche",
+    CreateWhen: "Quand",
     PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : ",
     days: [
         "Dimanche",

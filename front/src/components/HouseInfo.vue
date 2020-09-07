@@ -3,7 +3,9 @@
 	<div >
 		<p v-if="getSelected != null"> {{ getSelected.name }}  ({{ getSelected.id}})</p>
 		<div class="card">
-			<canvas ref="weekSummary" width="300" height="300"></canvas>	
+			<div class="summaryContainer">
+				<canvas ref="weekSummary" ></canvas>	
+			</div>
 		</div>
 	</div>
 	
@@ -49,10 +51,22 @@ export default {
 					data: values,
 					backgroundColor: 'rgba(255, 99, 132, 0.2)',						
 					borderColor: 'rgba(255, 99, 132, 1)',						
-					borderWidth: 1
-				}]
+					borderWidth: 1					
+				}],
+				
 			},
-			options: {}
+			options: {
+				 scales: {
+                  	yAxes: [{
+                            display: true,
+                            ticks: {
+                                beginAtZero: true,
+                                
+                                
+                            }
+                        }]
+                },
+			}
 		});  	
 		console.log(this.chart)	;
 	  }
@@ -70,10 +84,9 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-.card {
+.summaryContainer {
 	display:block;
 	position:relative;
-	width:50%;
-	height: 50%;
+	width:60vw;	
 }
 </style>

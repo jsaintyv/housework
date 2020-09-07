@@ -136,13 +136,22 @@
     
 }
 
-@media (min-width:768px) {
+@media (min-width:1250px) {
     .day {
         flex: 0 0 14.28%;
         border-left-style: solid;
         border-left-width: 1px;
         border-left-color: #E0E0E0;
         height: 80vh;
+    }
+}
+
+@media (min-width: 768px) and (max-width:1250px) {
+    .day {
+        flex: 0 0 50%;
+        border-left-style: solid;
+        border-left-width: 1px;
+        border-left-color: #E0E0E0;        
     }
 }
 

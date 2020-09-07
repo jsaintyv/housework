@@ -1,17 +1,17 @@
 <template>
     <div v-if="getSelected != null">                
-        <b-button @click="create()">create</b-button>
+        <b-button @click="create()">{{$lang.CreateWork}}</b-button>
         <b-modal ref="mdlConfirmAdd" title="" @ok="add()">
             <div role="group">
-                <label for="login">Who</label>
+                <label for="login">{{$lang.CreateWho}}</label>
                 <b-form-select id="login" v-model="worker" :options="getSelected.users" value-field="id" text-field="login" ></b-form-select>
             </div>
             <div role="group">
-                <label for="task">Done</label>
+                <label for="task">{{$lang.CreateTask}}</label>
                 <b-form-select id="task" v-model="taskType" :options="getSelected.types" value-field="id" text-field="name"></b-form-select>
             </div>
             <div role="group">
-                <label for="when">When</label>
+                <label for="when">{{$lang.CreateWhen}}</label>
                 <b-form-input id="when" type="date" v-model="when"></b-form-input>
             </div>
         </b-modal>

@@ -1,7 +1,9 @@
 <template>
-  <div id="app">
+  
+    <div id="app">
     <b-navbar id="bar" toggleable="lg" type="dark" variant="info">
-      <b-navbar-brand href="#">House Work</b-navbar-brand>
+      <b-container fluid>
+      <b-navbar-brand id="brandtitle" href="#">House Work</b-navbar-brand>
       <b-navbar-nav class="ml-auto">
         <b-nav-item-dropdown right v-if="getConnected">
           <template v-slot:button-content>
@@ -15,10 +17,12 @@
           <b-dropdown-item href="/logout#">Déconnexion</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
+      </b-container>
     </b-navbar>
-    <div id="main">
-      <router-view></router-view>
-    </div>
+  
+  <b-container id="main" fluid>    
+      <router-view></router-view>    
+  </b-container>
   </div>
 </template>
 
@@ -107,13 +111,15 @@ export default {
 <style>
 #app {
   
+
+}
+#brandtitle {
+  position:absolute;
+  top:7px;
 }
 
 #main {
-  position:absolute;
-  top:70px;
-  left:10px;
-  right:10px;
-  bottom:10px;
+  margin-top:10px;
 }
+
 </style>
