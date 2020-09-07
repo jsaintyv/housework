@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<b-dropdown-item v-for="h in getHouses" v-bind:key="h.id" @click="select(h)">
-			<router-link :to="{name: 'houseBoard', params: {houseId: h.id}}">{{h.name}} </router-link> <b-button @click="remove(h)">-</b-button>	
+			<router-link :to="{name: 'houseBoard', params: {houseId: h.id}}">{{h.name}} </router-link> <b-button v-if="h.owned"  @click="remove(h)">-</b-button>	
 		</b-dropdown-item>
 		<b-dropdown-item  @click="create()">{{lang.CreateHouseLabel}}</b-dropdown-item>
 		<b-modal ref="mdlConfirmRemove" title="" @ok="removeConfirmed()">
@@ -60,7 +60,9 @@ export default {
        	HouseService
        		.create({name: this.newName})
        		.done(()=> {
-			    this.$store.dispatch(ACTION_LOAD_HOUSES);
+			    this.$store.dispatch(ACTION_LOAD_HOUSES, ()=> {
+				
+				});
        		    this.$bvToast.toast('Add success', {
        		        variant: 'success',
        		        solid: true

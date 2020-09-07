@@ -3,16 +3,16 @@
         <b-button @click="create()">create</b-button>
         <b-modal ref="mdlConfirmAdd" title="" @ok="add()">
             <div role="group">
-                <label for="input-password">Who</label>
-                <b-form-select v-model="worker" :options="getSelected.users" value-field="id" text-field="login" ></b-form-select>
+                <label for="login">Who</label>
+                <b-form-select id="login" v-model="worker" :options="getSelected.users" value-field="id" text-field="login" ></b-form-select>
             </div>
             <div role="group">
-                <label for="input-password">Done</label>
-                <b-form-select v-model="taskType" :options="getSelected.types" value-field="id" text-field="name"></b-form-select>
+                <label for="task">Done</label>
+                <b-form-select id="task" v-model="taskType" :options="getSelected.types" value-field="id" text-field="name"></b-form-select>
             </div>
             <div role="group">
-                <label for="input-password">When</label>
-                <b-form-input type="date" v-model="when"></b-form-input>
+                <label for="when">When</label>
+                <b-form-input id="when" type="date" v-model="when"></b-form-input>
             </div>
         </b-modal>
     </div>
@@ -35,6 +35,7 @@
                 worker: this.$store.state.currentUser.id,
                 taskType: null,
                 when: null,
+
             };
             return model;
         },
@@ -56,6 +57,12 @@
                     .done((w) => {
                         store.commit(ADD_WORK, w);
                     });
+            },
+            showDialog(d) {                
+                this.when = DateUtils.formatDateISO(d);
+                console.log(d, this.when);
+                this.$refs['mdlConfirmAdd'].show();
+                
             }
         }
     }

@@ -2,15 +2,15 @@
     <div v-if="getSelected != null">
         <b-row> 
             <b-col><b-input type="date" :value="getCurrentTime" @change="changeDate" /></b-col>
-            <b-col><CreateWorkButton /></b-col>
+            <b-col><CreateWorkButton ref="createButton" /></b-col>
         </b-row>
         <div class="loading" v-if="getWorks == null">
             Loading...
         </div>
         <b-row v-if="days">
             <b-col class="day" v-for="d in days" v-bind:key="d.valueOf()">
-                <p>{{d | formatDate }}</p>
-                
+                <b-button class="dayhd" variant="light" v-on:click="openCreate(d)" >{{d | weekday}} {{d | formatDate }}</b-button>
+                                
                 <div class="work" v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
                             bg-variant="primary" text-variant="white">
                     <p>{{w.worker.login}}</p>
@@ -62,7 +62,8 @@
             getWorks() {
                 return store.state.works;
             },
-        },
+            
+        },        
         watch: {
             getWorks() {                
                 if(store.state.currentTime == null) {
@@ -94,6 +95,9 @@
             },
             canRemove(w) {
                 return this.$store.state.selectedHouse.owned||(w.worker.id === this.$store.state.currentUser.id)
+            },
+            openCreate(d) {
+                this.$refs.createButton.showDialog(d);
             }
         }
     }
@@ -104,12 +108,10 @@
 
 .work {
     position:relative; /* Allow absolute for cross */
-    border:1px solid;
+    border:1px solid #e0e0e0;
     border-radius: 5px;
-    padding-top: 7px;
-    padding-right:5px;
-    padding-left:5px;
-    border-color: #e0e0e0;
+    margin-bottom: 5px;   
+    padding: 5px; 
 }
 
 .topright {
@@ -118,15 +120,36 @@
     top:-2px;
 }
 
+.dayhd {
+    text-align: center;
+    line-height: 20px;
+    font-size: 16px;
+    width: 100%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.day {
+    
+    padding-right:5px;
+    padding-left:5px;
+    
+}
+
 @media (min-width:768px) {
     .day {
         flex: 0 0 14.28%;
+        border-left-style: solid;
+        border-left-width: 1px;
+        border-left-color: #E0E0E0;
+        height: 80vh;
     }
 }
 
 @media (max-width:767px) {
     .day {
-        flex: 0 0 50%;
+        flex: 0 0 100%;
+        
     }
 }
 

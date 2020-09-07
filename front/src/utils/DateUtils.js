@@ -90,7 +90,17 @@ class DateUtils {
      * @param {Date} d 
      */
     formatDateISO(d) {
-        return d.toISOString().slice(0,10);
+        var dayAsStr = "" + d.getDate();
+        if (dayAsStr.length == 1) {
+            dayAsStr = "0" + dayAsStr;
+        }
+
+        var monthAsStr = "" + (d.getMonth() + 1);
+        if (monthAsStr.length == 1) {
+            monthAsStr = "0" + monthAsStr;
+        }
+
+        return d.getFullYear() + "-" + monthAsStr + "-" + dayAsStr;
     }
 }
 

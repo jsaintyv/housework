@@ -10,7 +10,16 @@ var fr = {
     PostRegisterLabel: "Nous vous avons envoyé un e-mail avec un lien. Veuillez cliquer sur ce lien pour confirmer votre inscription",
     CreateHouseLabel: "Ajouter",
     CreateTaskType: "Ajouter",
-    PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : "
+    PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : ",
+    days: [
+        "Dimanche",
+        "Lundi",
+        "Mardi",
+        "Mercredi",
+        "Jeudi",
+        "Vendredi",
+        "Samedi"
+    ]
 };
 
 export default fr;

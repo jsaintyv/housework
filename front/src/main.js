@@ -19,9 +19,24 @@ Vue.prototype.$store = store;
 window.houseWorkStore = store;
 
 
+Vue.filter('weekday', function(value) {
+  if (value) {    
+    return lang.days[value.getDay()]    
+  }
+});
+
 Vue.filter('formatDate', function(value) {
-  if (value) {
-    return value.getDate() + "/" + value.getMonth() + "/" + value.getYear();
+  if (value) {    
+    var dayAsStr= "" +value.getDate() ;
+    if(dayAsStr.length == 1) {
+      dayAsStr = "0" + dayAsStr;
+    }
+
+    var monthAsStr = "" + (value.getMonth()+1);
+    if(monthAsStr.length == 1) {
+      monthAsStr = "0" + monthAsStr;
+    }
+    return dayAsStr + "/" + monthAsStr + "/" + value.getFullYear();
   }
 });
 
