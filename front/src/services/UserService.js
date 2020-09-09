@@ -1,5 +1,6 @@
 import jQuery from "jquery"; 
 
+import query from "./QueryUtils.js"; 
 class UserService {
     
     constructor()
@@ -30,6 +31,16 @@ class UserService {
         });
         
         return this.defUser;
+    }
+
+    update(user, newPassword) {            
+        return query.post("/api/user/update/" + user.id, {
+            name: user.name,
+            updatePassword: newPassword !== null,
+            password: newPassword
+        });
+        
+        
     }
 }
 

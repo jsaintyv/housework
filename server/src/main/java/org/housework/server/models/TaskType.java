@@ -15,6 +15,10 @@ public class TaskType {
     private int id;
     
     private String name;
+    
+    private String colorRgb;
+    
+    private String shortName; 
 
     private double value;
 
@@ -41,4 +45,22 @@ public class TaskType {
 	public void setValue(double value) {
 		this.value = value;
 	}
+
+	public String getColorRgb() {
+		return colorRgb;
+	}
+
+	public void setColorRgb(String colorRgb) {
+		this.colorRgb = colorRgb;
+	}
+
+	public String getShortName() {
+		return shortName;
+	}
+
+	public void setShortName(String shortName) {
+		this.shortName = shortName;
+	}
+	
+	
 }

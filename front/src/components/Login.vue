@@ -1,4 +1,5 @@
 <template>
+  <b-form @submit="callLogin();return false;" @submit.stop.prevent >
   <b-card id="hw-login" class="text-left">
     <b-card-text>
       <div role="group">
@@ -11,11 +12,12 @@
       </div>
     </b-card-text>
 
-    <div id="hw-button" role="group">
-      <b-button @click="callLogin()">{{lang.ConnectionLabel}}</b-button>
-      <b-button @click="callRegister()">{{lang.RegisterLabel}}</b-button>
-    </div>
+    <b-row >
+      <b-col md="2"><b-button type="submit" >{{lang.ConnectionLabel}}</b-button></b-col>
+      <b-col md="2"><b-button @click="callRegister()">{{lang.RegisterLabel}}</b-button></b-col>
+    </b-row>
   </b-card>
+  </b-form>
 </template>
 
 <script>
@@ -33,7 +35,7 @@ export default {
     };
   },
   methods: {
-    callLogin() {
+    callLogin(e) {
       console.log(UserService);
       UserService.login(this.login, this.password).done(r => {
         this.$store.commit(CONNECTED, r);
@@ -51,6 +53,8 @@ export default {
           alert("Error");
         }
       });
+      e.stopPropagation();
+      e.preventDefault();
     },
     callRegister() {
       this.$router.push("/register");

@@ -28,6 +28,8 @@ public class User implements UserDetails {
     @Column(name = "login", unique=true)
     private String login;
     
+    private String name;
+    
     private String password;
     
     private boolean enabled;
@@ -52,6 +54,14 @@ public class User implements UserDetails {
 
 	public void setLogin(String login) {
 		this.login = login;
+	}
+	
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@JsonIgnore

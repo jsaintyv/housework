@@ -1,12 +1,32 @@
 <template>
     
-	<div >
-		<p v-if="getSelected != null"> {{ getSelected.name }}  ({{ getSelected.id}})</p>
-		<div class="card">
-			<div class="summaryContainer">
-				<canvas ref="weekSummary" ></canvas>	
-			</div>
-		</div>
+	<div v-if="getSelected != null">
+		<p> {{ getSelected.name }}  ({{ getSelected.id}})</p>
+
+		<b-card>
+			<b-row>		
+				<div class="roundContainer" v-for="r in getScoresByUser" v-bind:key="r.login" col="1">
+					<div class="round">
+						{{r.value}}
+					</div>
+					<div  >
+						{{r | displayName}}
+					</div>
+				</div>		
+			</b-row>
+		</b-card>
+
+		<b-card>
+			<b-row>
+				<b-col col="12">
+					<b-card>
+						<div class="summaryContainer">
+							<canvas ref="weekSummary" ></canvas>	
+						</div>
+					</b-card>
+				</b-col>
+			</b-row>
+		</b-card>
 	</div>
 	
 </template>
@@ -88,5 +108,24 @@ export default {
 	display:block;
 	position:relative;
 	width:60vw;	
+}
+
+.round {
+	margin:auto;
+	display: block;
+	width: 100px;
+	height: 100px;
+	line-height: 100px;
+	text-align: center;
+	background-color: #5bc0de;
+	color: #e0e0e0;
+	border-radius: 100px;
+}
+
+.roundContainer {
+	flex:none;
+	width: 200px;
+	text-align: center;
+	margin-bottom: 10px;
 }
 </style>

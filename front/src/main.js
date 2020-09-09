@@ -19,6 +19,13 @@ Vue.prototype.$store = store;
 window.houseWorkStore = store;
 
 
+Vue.filter('displayName', function(user) {
+  if (user.name) {    
+    return user.name;        
+  }
+  return user.login;
+});
+
 Vue.filter('weekday', function(value) {
   if (value) {    
     return lang.days[value.getDay()]    

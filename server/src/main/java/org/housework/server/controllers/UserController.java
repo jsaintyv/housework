@@ -7,6 +7,7 @@ import java.util.Random;
 import javax.servlet.http.HttpServletRequest;
 
 import org.housework.server.front.UserFront;
+import org.housework.server.front.UserUpdateForm;
 import org.housework.server.models.RoleAuthority;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
@@ -18,7 +19,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
@@ -74,6 +77,22 @@ public class UserController {
 		UriComponents uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/confirmRegister").queryParam("login", login).queryParam("registeringCode", user.getRegisteringCode()).build();
 		LOG.info(uri.toUriString());
 		
+		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.ACCEPTED);
+	}
+	
+	@PostMapping("/api/user/update/{userId}")
+	public ResponseEntity<Boolean>  update(@PathVariable Integer userId, @RequestBody UserUpdateForm form) {
+		User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		if(userId == null) {
+			return new ResponseEntity<>(Boolean.FALSE, HttpStatus.BAD_REQUEST);
+		}
+		
+		if(userId != user.getId()) {
+			return new ResponseEntity<>(Boolean.FALSE, HttpStatus.FORBIDDEN);
+		}			
+		form.copyInto(user);		
+		userRepository.save(user);
+				
 		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.ACCEPTED);
 	}
 

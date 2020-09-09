@@ -14,7 +14,8 @@
           <b-dropdown-divider></b-dropdown-divider>
           <MenuEntriesHouse />
           <b-dropdown-divider></b-dropdown-divider>
-          <b-dropdown-item href="/logout#">Déconnexion</b-dropdown-item>
+          <b-dropdown-item href="#/userParam">{{$lang.userParam.title}}</b-dropdown-item>
+          <b-dropdown-item href="/logout#">{{$lang.logout}}</b-dropdown-item>
         </b-nav-item-dropdown>
       </b-navbar-nav>
       </b-container>
@@ -40,6 +41,7 @@ import HouseInfo from './components/HouseInfo'
 import LoginStatus from './components/LoginStatus.vue'
 import UserHouses from './components/UserHouses.vue'
 import MenuEntriesHouse from './components/MenuEntriesHouse.vue'
+import UserParam from  './components/UserParam'
 import {mapState} from 'vuex'
 import {default as store, ACTION_SELECT_HOUSE_ID, ACTION_CHECK_CONNECTED, STATUS_DISCONNECTED, STATUS_CONNECTED} from './stores';
 
@@ -59,6 +61,7 @@ const routes = [
     { path: '/houseInfo/:houseId', name:"houseInfo", component: HouseInfo },
     { path: '/register', component: Register },
     { path: '/postRegister', component: PostRegister },
+    { path: '/userParam', component: UserParam },
   ];
   
 const router = new VueRouter({

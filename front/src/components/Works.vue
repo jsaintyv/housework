@@ -13,8 +13,9 @@
                                 
                 <div class="work" v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
                             bg-variant="primary" text-variant="white">
-                    <p>{{w.worker.login}}</p>
-                    <p>{{w.type.name}}</p>
+                    <span class="circle" v-bind:style="{ backgroundColor: w.type.colorRgb}">{{w.type.shortName}}</span>
+                    <p class="textRow">{{w.worker | displayName}}</p>
+                    <p class="textRow">{{w.type.name}}</p>
                     <p class="topright" v-if="canRemove(w)"  @click="remove(w)"><span class="material-icons">clear</span></p>
                 </div>   
             </b-col>
@@ -111,7 +112,10 @@
     border:1px solid #e0e0e0;
     border-radius: 5px;
     margin-bottom: 5px;   
-    padding: 5px; 
+    padding-top: 10px; 
+    padding-left: 45px;
+    padding-right: 20px;
+    
 }
 
 .topright {
@@ -136,13 +140,36 @@
     
 }
 
+.textRow {
+    text-overflow: ellipsis;
+    line-height: 15px;
+    overflow: hidden;
+}
+
+.circle {
+    display: block;
+    position:absolute;
+    border: 0px;
+    line-height: 30px;
+    width: 30px;
+    height: 30px;    
+    border-radius: 30px;
+    overflow: hidden;
+    text-align: center;
+    left:5px;
+    top:18px;
+    color: #E0E0E0;
+    font-size: 12px;
+}
+
 @media (min-width:1250px) {
     .day {
-        flex: 0 0 14.28%;
+        flex: 0 0 14%;
         border-left-style: solid;
         border-left-width: 1px;
         border-left-color: #E0E0E0;
         height: 80vh;
+        max-width: 14%;
     }
 }
 
@@ -152,6 +179,7 @@
         border-left-style: solid;
         border-left-width: 1px;
         border-left-color: #E0E0E0;        
+        max-width: 50%;
     }
 }
 

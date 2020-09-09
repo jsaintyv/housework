@@ -3,7 +3,7 @@ package org.housework.server.front;
 import org.housework.server.models.User;
 
 public class UserFront {
-	private final User user;
+	private final User user;	
 	
 	public UserFront(User user) {
 		this.user = user;
@@ -19,5 +19,9 @@ public class UserFront {
 
 	public int getId() {
 		return user.getId();
+	}
+
+	public String getName() {
+		return user.getName();
 	}		
 }

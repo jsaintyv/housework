@@ -69,6 +69,7 @@ export default new Vuex.Store({
         [SELECT_HOUSE] (state, house) {
             console.log(SELECT_HOUSE + " -> ", house);
             house.owned = (state.currentUser.id === house.owner.id);            
+            house.types = house.types.sort((a, b)=>a.id - b.id);
             state.selectedHouse = house;
             state.works = null;
             if(state.currentTime == null) {

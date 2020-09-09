@@ -15,6 +15,7 @@ var fr = {
     CreateTask: "Tâche",
     CreateWhen: "Quand",
     PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : ",
+    logout: "Déconnexion",
     days: [
         "Dimanche",
         "Lundi",
@@ -23,7 +24,21 @@ var fr = {
         "Jeudi",
         "Vendredi",
         "Samedi"
-    ]
+    ],
+    taskType: {
+        id: 'Id',
+        name: 'Nom',
+        value: 'Valeur',
+        shortName: 'Alias/Sigle',
+        colorRgb: 'Couleur (Rgb)'
+    },
+    userParam: {
+        title: 'Paramétrage',
+        name: 'Nom',
+        newPassword: 'Nouveau mot de passe',
+        confirmPassword: 'Nouveau mot de passe(confirmation)',
+        save: 'Sauvegarde'
+    }
 };
 
 export default fr;
