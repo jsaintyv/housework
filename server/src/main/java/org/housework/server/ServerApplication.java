@@ -16,16 +16,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class ServerApplication {
-	private static String configurationJson;
+	private static String configurationJson = "./configuration.json";
 	private static final Logger LOG = LoggerFactory.getLogger(ServerApplication.class);
 
 	@Autowired
 	private UserRepository userRepository;
 
 	public static void main(String[] args) {
-		if(args.length == 0) {
-			configurationJson = "./configuration.json"; 
-		} else {
+		if(args.length == 1 && args[1].endsWith(".json")) {			
 			configurationJson = args[0];
 		}
 		
