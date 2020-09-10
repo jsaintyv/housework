@@ -63,6 +63,11 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
+		<dependency>
+            <groupId>com.sun.mail</groupId>
+            <artifactId>javax.mail</artifactId>
+            <version>1.6.2</version>
+        </dependency>
 	</dependencies>
 
 	<build>
@@ -75,35 +80,13 @@
 				<artifactId>maven-antrun-plugin</artifactId>
 				<executions>
 					<execution>
-						<phase>compile</phase>
-						<configuration>
-							
-								<target>
-									<echo message="== NPM BUILD FRONT =="/>
-									<exec executable="npm" dir="../front">
-									    <arg value="run" />
-									    <arg value="build"/>
-									</exec>	
-								</target>		
-							
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<executions>
-					<execution>
+						<id>fronttest</id>
 						<phase>test</phase>
-						<configuration>
-							
+						<configuration>							
 								<target>
 									<echo message="== NPM TEST FRONT =="/>
 									<exec executable="npm" dir="../front">
-									    <arg value="run" />
+									    <arg value="run-script" />
 									    <arg value="test"/>
 									</exec>	
 								</target>		
@@ -113,36 +96,26 @@
 							<goal>run</goal>
 						</goals>
 					</execution>
-				</executions>
-			</plugin>
-			<!-- 
-			<plugin>
-				<artifactId>maven-resources-plugin</artifactId>
-				<executions>
 					<execution>
-						<id>Retrieve frontend content</id>
-						<phase>generate-resources</phase>
-						<goals>
-							<goal>copy-resources</goal>
-						</goals>
+						<id>frontbuild</id>
+						<phase>install</phase>
 						<configuration>
-							<outputDirectory>src/main/resources/public</outputDirectory>
-							<overwrite>true</overwrite>
-							<resources>
-								<resource>
-									<directory>${project.parent.basedir}/front/target/dist</directory>
-									<includes>
-										<include>static/</include>
-										<include>index.html</include>
-										<include>favicon.ico</include>
-									</includes>
-								</resource>
-							</resources>
+							
+								<target>
+									<echo message="== NPM BUILD FRONT =="/>
+									<exec executable="npm" dir="../front">
+									    <arg value="run-script" />
+									    <arg value="build"/>
+									</exec>	
+								</target>		
+							
 						</configuration>
-					</execution>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>					
 				</executions>
-			</plugin>
-			 -->
+			</plugin>			
 		</plugins>
 	</build>
 </project>

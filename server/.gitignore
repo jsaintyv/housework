@@ -30,3 +30,5 @@ build/
 ### VS Code ###
 .vscode/
 /derby.log
+
+configuration.json

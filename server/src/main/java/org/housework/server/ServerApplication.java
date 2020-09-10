@@ -1,5 +1,7 @@
 package org.housework.server;
 
+import java.io.File;
+
 import org.housework.server.models.RoleAuthority;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
@@ -14,19 +16,28 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @SpringBootApplication
 public class ServerApplication {
+	private static String configurationJson;
 	private static final Logger LOG = LoggerFactory.getLogger(ServerApplication.class);
 
 	@Autowired
 	private UserRepository userRepository;
 
 	public static void main(String[] args) {
+		if(args.length == 0) {
+			configurationJson = "./configuration.json"; 
+		} else {
+			configurationJson = args[0];
+		}
+		
 		SpringApplication.run(ServerApplication.class, args);
 	}
 
 	@Bean
-	InitializingBean sendDatabase() {
+	InitializingBean sendDatabase() {			
 		LOG.info("### SendDatabase ### ");
 		return () -> {
+			ConfigurationService.getInstance().loadInstance(new File(configurationJson));
+			
 			LOG.info("### Controle base stat ### ");
 			User user = userRepository.findByLogin("admin");
 			if (user == null) {
@@ -38,7 +49,7 @@ public class ServerApplication {
 				
 				user.setRole(RoleAuthority.ADMIN);
 				userRepository.save(user);
-				LOG.info("Admin password hash:" + user.getPassword());
+				LOG.info("Admin password hash:" + user.getPassword());				
 			}
 
 		};

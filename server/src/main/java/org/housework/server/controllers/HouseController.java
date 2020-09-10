@@ -1,13 +1,10 @@
 package org.housework.server.controllers;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.housework.server.UserSecurityService;
 import org.housework.server.front.HouseForm;
 import org.housework.server.mail.MailService;
@@ -25,13 +22,11 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
-public class HouseController {
-	private Log LOG = LogFactory.getLog(HouseController.class);
+public class HouseController {	
 	@Autowired
 	HouseRepository houseRepository;
 	

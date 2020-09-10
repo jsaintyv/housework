@@ -76,10 +76,10 @@ import {
 import TaskTypeService from "../services/TaskTypeService.js";
 
 export default {
-  name: "TaskTypes",
+  name: "TaskTypes",  
   computed: {
-    getSelected() {
-      return store.state.selectedHouse;
+    getSelected() {      
+      return this.$store.state.selectedHouse;
     }
   },
   methods: {

@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.housework.server.front.UserFront;
 import org.housework.server.front.UserUpdateForm;
+import org.housework.server.mail.MailService;
 import org.housework.server.models.RoleAuthority;
 import org.housework.server.models.User;
 import org.housework.server.models.UserRepository;
@@ -73,10 +74,8 @@ public class UserController {
 		user.setRole(RoleAuthority.USER);
 		user.setRegisteringCode(getNextRandomLong());
 		userRepository.save(user);
-		
-		UriComponents uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/confirmRegister").queryParam("login", login).queryParam("registeringCode", user.getRegisteringCode()).build();
-		LOG.info(uri.toUriString());
-		
+				
+		MailService.instance().sendRegistrationUserConfirmation(user);		
 		return new ResponseEntity<>(Boolean.TRUE, HttpStatus.ACCEPTED);
 	}
 	

@@ -43,14 +43,14 @@ export default new Vuex.Store({
     },       
     mutations: { 
         [CONNECTED] (state, user) {
-            console.log("Connected", user);
+            //console.log("Connected", user);
             
 
             state.stateConnected = STATUS_CONNECTED;
             state.currentUser = {...user};
         },
         [DISCONNECTED] (state) {
-            console.log("Disconnected");
+            //console.log("Disconnected");
             state.stateConnected = STATUS_DISCONNECTED;
             state.currentUser = null;
         },
@@ -90,7 +90,7 @@ export default new Vuex.Store({
             state.works = null;
         },
         [WORKS_UPDATE] (state, works) {
-            console.log(works);
+            //console.log(works);
             state.works = works;
         },
         [ADD_WORK] (state, work) {
