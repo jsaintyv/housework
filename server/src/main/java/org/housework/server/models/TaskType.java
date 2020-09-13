@@ -19,7 +19,9 @@ public class TaskType {
     private String colorRgb;
     
     private String shortName; 
-
+    
+    private Boolean reservedToAdmin;
+      
     private double value;
 
 	public int getId() {
@@ -61,6 +63,12 @@ public class TaskType {
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
 	}
-	
-	
+
+	public Boolean isReservedToAdmin() {
+		return reservedToAdmin;
+	}
+
+	public void setReservedToAdmin(Boolean reservedToAdmin) {
+		this.reservedToAdmin = reservedToAdmin;
+	}	
 }

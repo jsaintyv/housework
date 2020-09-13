@@ -4,6 +4,7 @@ public class WorkForm {
 	private long date;
 	private int workerId;
 	private int taskTypeId;
+
 	
 	public long getDate() {
 		return date;
@@ -23,4 +24,6 @@ public class WorkForm {
 	public void setTaskTypeId(int taskTypeId) {
 		this.taskTypeId = taskTypeId;
 	}
+	
+	
 }

@@ -1,5 +1,6 @@
 package org.housework.server.controllers;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -17,6 +18,7 @@ import org.housework.server.models.WorkRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -66,6 +68,26 @@ public class WorkController {
 			work.setType(type);
 			work.setHouse(house);
 			work.setWorker(user);
+			
+			
+			User connected = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
+			if(connected.getId() != house.getOwner().getId()) {
+				if(Boolean.TRUE.equals(type.isReservedToAdmin())) {
+					System.out.println("reject: reserved to admin");
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+				
+				Calendar cal  = Calendar.getInstance();
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				cal.add(Calendar.DAY_OF_MONTH,-2);
+				if(work.getDate().getTime() < cal.getTimeInMillis()) {
+					System.out.println("reject: too old");
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+			}
+			
 			work = workRepository.save(work);
 			return new ResponseEntity<>(work, HttpStatus.OK);
 		});
@@ -96,6 +118,26 @@ public class WorkController {
 			
 			if(work.getHouse().getId() != house.getId()) {
 				return new ResponseEntity<Boolean>(HttpStatus.BAD_REQUEST);
+			}
+			
+			User user = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			if(user.getId() != house.getOwner().getId()) {
+				if(Boolean.TRUE.equals(work.getType().isReservedToAdmin())) {
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+				
+				if(work.getWorker().getId() != user.getId()) {
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
+				
+				Calendar cal  = Calendar.getInstance();
+				cal.set(Calendar.HOUR, 0);
+				cal.set(Calendar.MINUTE, 0);
+				cal.set(Calendar.MILLISECOND, 0);
+				cal.add(Calendar.DAY_OF_MONTH,-2);
+				if(work.getDate().getTime() < cal.getTimeInMillis()) {
+					return new ResponseEntity<>(HttpStatus.FORBIDDEN);
+				}
 			}
 			
 			workRepository.delete(work);

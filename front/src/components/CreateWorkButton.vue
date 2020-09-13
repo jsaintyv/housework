@@ -8,7 +8,7 @@
             </div>
             <div role="group">
                 <label for="task">{{$lang.CreateTask}}</label>
-                <b-form-select id="task" v-model="taskType" :options="getSelected.types" value-field="id" text-field="name"></b-form-select>
+                <b-form-select id="task" v-model="taskType" :options="getAvailablesTypes" value-field="id" text-field="name"></b-form-select>
             </div>
             <div role="group">
                 <label for="when">{{$lang.CreateWhen}}</label>
@@ -42,7 +42,12 @@
         computed: {
             getSelected() {
                 return store.state.selectedHouse;
-            }            
+            },            
+            getAvailablesTypes() {                                                
+                var selected  = store.state.selectedHouse;
+                var owned = selected.owned; 
+                return selected.types.filter((t)=>owned || !t.reservedToAdmin);
+            }
         },        
         methods: {            
             create() {
@@ -56,6 +61,16 @@
                     })
                     .done((w) => {
                         store.commit(ADD_WORK, w);
+                    })
+                    .fail(()=> {
+                        this.$bvToast.toast(
+                            this.$lang.forbidden, 
+                            {
+                            title: this.$lang.forbidden,
+                            variant: 'danger',
+                            autoHideDelay: 5000,
+                            solid: true
+                        });
                     });
             },
             showDialog(d) {                
