@@ -7,6 +7,7 @@ public class TaskTypeForm {
 	private double value;
     private String colorRgb;    
     private String shortName;
+	private Boolean reservedToAdmin;
 
 	public String getName() {
 		return name;
@@ -27,7 +28,9 @@ public class TaskTypeForm {
 		type.setName(this.name);		
 		type.setValue(this.value);
 		type.setColorRgb(this.colorRgb);
+		
 		type.setShortName(this.shortName);
+		type.setReservedToAdmin(getReservedToAdmin());
 	}
 
 	public String getColorRgb() {
@@ -45,4 +48,12 @@ public class TaskTypeForm {
 	public void setShortName(String shortName) {
 		this.shortName = shortName;
 	}	
+	
+	public Boolean getReservedToAdmin() {
+		return reservedToAdmin;
+	}
+	
+	public void setReservedToAdmin(Boolean reservedToAdmin) {
+		this.reservedToAdmin = reservedToAdmin;
+	}
 }

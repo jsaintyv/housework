@@ -15,6 +15,7 @@ var fr = {
     CreateTask: "Tâche",
     CreateWhen: "Quand",
     PleaseConfirmRemoveOf: "Veuillez confirmer la suppression : ",
+    forbidden: 'Interdit',
     logout: "Déconnexion",
     days: [
         "Dimanche",
@@ -29,6 +30,7 @@ var fr = {
         id: 'Id',
         name: 'Nom',
         value: 'Valeur',
+        reservedToAdmin: 'Admin',
         shortName: 'Alias/Sigle',
         colorRgb: 'Couleur (Rgb)'
     },

@@ -9,7 +9,8 @@
         </div>
         <b-row v-if="days">
             <b-col class="day" v-for="d in days" v-bind:key="d.valueOf()">
-                <b-button class="dayhd" variant="light" v-on:click="openCreate(d)" >{{d | weekday}} {{d | formatDate }}</b-button>
+                <b-button class="dayhd" variant="light" v-on:click="openCreate(d)" v-if="canAdd(d)" >{{d | weekday}} {{d | formatDate }}</b-button>
+                <div class="dayhd" variant="light" v-if="!canAdd(d)" >{{d | weekday}} {{d | formatDate }}</div>
                                 
                 <div class="work" v-for="w in workByDays[d.valueOf()]" v-bind:key="w.id" 
                             bg-variant="primary" text-variant="white">
@@ -37,10 +38,18 @@
     export default {
         name: 'Works',
         data() {
+            var limitDate = new Date();
+            limitDate.setDate(limitDate.getDate()-2);
+
+            var maxDate = new Date();
+            maxDate.setDate(maxDate.getDate()+ 1);
+
             var model = {
                 lang: lang,               
                 days: null,
-                workByDays: null
+                workByDays: null,
+                limitDate: limitDate.getTime(),
+                maxDate: maxDate.getTime()
             };
             return model;
         },
@@ -94,10 +103,19 @@
                         store.commit(REMOVE_WORK, w);
                     });
             },
-            canRemove(w) {
-                return this.$store.state.selectedHouse.owned||(w.worker.id === this.$store.state.currentUser.id)
+            canAdd(d) {       
+                console.log(this.limitDate, d.getTime(), this.maxDate);         
+                return this.$store.state.selectedHouse.owned
+                    || ((this.limitDate <= d.getTime()) && (d.getTime() <= this.maxDate))
+                    
+            },
+            canRemove(w) {                
+                return this.$store.state.selectedHouse.owned
+                    || ((w.date >= this.limitDate) && (w.date <= this.maxDate) && w.worker.id === this.$store.state.currentUser.id && !w.type.reservedToAdmin);                                        
             },
             openCreate(d) {
+                
+
                 this.$refs.createButton.showDialog(d);
             }
         }
@@ -132,6 +150,12 @@
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+div.dayhd {
+    line-height: 32px;
+    vertical-align: middle;
+}
+
 
 .day {
     

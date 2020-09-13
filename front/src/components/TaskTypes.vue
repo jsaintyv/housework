@@ -21,13 +21,23 @@
         <b-col lg="2" md="12">
           <b-form-group :label="$lang.taskType.value">
             <b-form-input
-              id="input-"
+              id="input-" 
               :readonly="!getSelected.owned"
               v-model="t.value"
               type="number"
               required
               @change="update(t)"
             ></b-form-input>
+          </b-form-group>
+        </b-col>
+        <b-col lg="1" md="12">
+          <b-form-group :label="$lang.taskType.reservedToAdmin">            
+            <input              
+              type="checkbox"              
+              v-model="t.reservedToAdmin"     
+              :disabled="!getSelected.owned"
+              @change="update(t)"              
+            />
           </b-form-group>
         </b-col>
         <b-col lg="2" md="12">
@@ -57,7 +67,7 @@
           </b-form-group>
         </b-col>
 
-        <b-col lg="2" md="12">
+        <b-col lg="1" md="12">
           <b-button v-if="getSelected.owned" @click="remove(t)">-</b-button>
         </b-col>
       </b-row>
