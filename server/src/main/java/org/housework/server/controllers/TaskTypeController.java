@@ -49,6 +49,7 @@ public class TaskTypeController {
 				return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 			}
 			taskTypeForm.copyInto(taskType);
+			System.out.println(taskType.isReservedToAdmin());
 			taskTypeRepository.save(taskType);
 			house.getTypes().add(taskType);
 			houseRepository.save(house);
