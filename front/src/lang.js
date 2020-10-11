@@ -5,6 +5,9 @@ var fr = {
     PasswordLabel: "Mot de passe",
     ConfirmPasswordLabel: "Confirmer le mot de passe",
     ConnectionLabel: "Connexion",
+    TypesLabel: "Types",
+    WorkersLabel: "Travailleurs",
+    GraphicsLabel: "Graphiques",
     NameLabel: "Nom",
     RegisterLabel: "S'enregistrer",
     PostRegisterLabel: "Nous vous avons envoyé un e-mail avec un lien. Veuillez cliquer sur ce lien pour confirmer votre inscription",
@@ -40,6 +43,11 @@ var fr = {
         newPassword: 'Nouveau mot de passe',
         confirmPassword: 'Nouveau mot de passe(confirmation)',
         save: 'Sauvegarde'
+    },
+    graphicsBoard: {
+        scoringToPaid: "Scores à payer",
+        workByWeeks: "Repartitions par semaines",
+        workByType: "Repartitions par types",
     }
 };
 

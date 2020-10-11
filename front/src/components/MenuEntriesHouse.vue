@@ -1,13 +1,13 @@
 <template>
 	<div v-if="getSelected != null">
 		<b-dropdown-item :to="{name: 'taskTypes', params: {houseId: getSelected.id}}">
-			Types	
+			{{lang.TypesLabel}}	
 		</b-dropdown-item>
 		<b-dropdown-item :to="{name: 'workers', params: {houseId: getSelected.id}}">
-			Travailleurs	
+			{{lang.WorkersLabel}}	
 		</b-dropdown-item>
 		<b-dropdown-item :to="{name: 'houseInfo', params: {houseId: getSelected.id}}">
-			Infos	
+			{{lang.GraphicsLabel}}	
 		</b-dropdown-item>
 	</div>
 </template>

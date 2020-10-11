@@ -57,6 +57,14 @@ class HouseService {
     getScoresByUser(houseId) {
         return jQuery.get("/api/work/scoresByUser/" + houseId);      
     }
+
+    /**
+     * Get scores cube
+     * @return deffered
+     */
+    getScoresCube(houseId) {
+        return jQuery.get("/api/olap/worksByWeek/" + houseId);      
+    }
 }
 
 

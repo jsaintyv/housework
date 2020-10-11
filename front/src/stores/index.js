@@ -19,12 +19,14 @@ export const WORKS_UPDATE = "WORKS_UPDATE";
 export const ADD_WORK = "ADD_WORK";
 export const REMOVE_WORK = "REMOVE_WORK";
 export const CHANGE_SCORES_BY_USER = "CHANGE_SCORES_BY_USER";
+export const CHANGE_SCORE_CUBE = "CHANGE_SCORE_CUBE";
 
 export const ACTION_CHANGE_DATE = "CHANGE_DATE";
 export const ACTION_SELECT_HOUSE_ID = "SELECT_HOUSE_ID";
 export const ACTION_CHECK_CONNECTED = "CHECK_CONNECTED";
 export const ACTION_LOAD_SCORES_BY_USER = "LOAD_SCORES_BY_USER";
 export const ACTION_LOAD_HOUSES = "ACTION_LOAD_HOUSES";
+export const ACTION_LOAD_SCORE_CUBE = "ACTION_LOAD_SCORE_CUBE";
 
 export const STATUS_CHECKING = 0;
 export const STATUS_DISCONNECTED = 1;
@@ -39,7 +41,8 @@ export default new Vuex.Store({
         selectedHouse: null,
         currentTime: new Date(),
         works: null,
-        scoresByUser: []
+        scoresByUser: [],
+        scoresCube: []
     },       
     mutations: { 
         [CONNECTED] (state, user) {
@@ -103,6 +106,9 @@ export default new Vuex.Store({
         },
         [CHANGE_SCORES_BY_USER] (state, scoresByUser) {
             state.scoresByUser = scoresByUser;
+        },
+        [CHANGE_SCORE_CUBE] (state, scoresCube) {
+            state.scoresCube = scoresCube;
         }
     },
     actions: {
@@ -189,7 +195,21 @@ export default new Vuex.Store({
             .done((l)=> {
                 store.commit(CHANGE_SCORES_BY_USER, l);
             });
+        },
+        [ACTION_LOAD_SCORE_CUBE] (store) {
+            console.log("Query score cube");
+            if(!store.state.selectedHouse) {
+                return;
+            }
+
+            
+            HouseService.getScoresCube(store.state.selectedHouse.id)
+            .done((l)=> {
+                console.log("Update score cube")
+                store.commit(CHANGE_SCORE_CUBE, l);
+            });
         }
+
     }
 
 });

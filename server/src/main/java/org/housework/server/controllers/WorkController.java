@@ -1,9 +1,14 @@
 package org.housework.server.controllers;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import javax.servlet.http.HttpServletResponse;
+
+import org.efficientolap.OlapStreamQueryAsJson;
 import org.housework.server.UserSecurityService;
 import org.housework.server.front.WorkForm;
 import org.housework.server.models.HouseRepository;
@@ -15,8 +20,10 @@ import org.housework.server.models.ValueByUser;
 import org.housework.server.models.ValueByUserService;
 import org.housework.server.models.Work;
 import org.housework.server.models.WorkRepository;
+import org.housework.server.olap.DataMartHouse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -25,6 +32,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.mvc.method.annotation.StreamingResponseBody;
 
 @RestController
 public class WorkController {
@@ -68,8 +76,7 @@ public class WorkController {
 			work.setType(type);
 			work.setHouse(house);
 			work.setWorker(user);
-			
-			
+						
 			User connected = (User)SecurityContextHolder.getContext().getAuthentication().getPrincipal();			
 			if(connected.getId() != house.getOwner().getId()) {
 				if(Boolean.TRUE.equals(type.isReservedToAdmin())) {
@@ -105,6 +112,29 @@ public class WorkController {
 	public ResponseEntity<List<ValueByUser>> scoreByUser(@PathVariable int houseId) {
 		return HouseRightUtils.checkRightOnHouse(houseRepository, houseId, (house)-> {
 			return new ResponseEntity<>(valueByUserService.list(houseId), HttpStatus.OK);
+		});
+	}
+	
+	
+	@GetMapping("/api/olap/worksByWeek/{houseId}")
+	public ResponseEntity<StreamingResponseBody> worksByWeek(@PathVariable int houseId, HttpServletResponse response) {
+		response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+		return HouseRightUtils.checkRightOnHouse(houseRepository, houseId, (house)-> {			
+			DataMartHouse dataMart = DataMartHouse.getDatamart(house);
+			dataMart.update(house, workRepository);			
+			StreamingResponseBody result = new StreamingResponseBody() {
+				@Override
+				public void writeTo(OutputStream out) throws IOException {
+					
+					try(OlapStreamQueryAsJson jsonStream = new OlapStreamQueryAsJson(out) ) {
+						dataMart.scoreMeasure.forEachCell(jsonStream, dataMart.userDimension.any, dataMart.typeDimension.any, dataMart.weekDimension.any, dataMart.workIdDimension.any);					
+					}
+					out.flush();
+				}
+			};
+			ResponseEntity<StreamingResponseBody> r = new ResponseEntity<StreamingResponseBody>(result, HttpStatus.OK);
+			
+			return r;					
 		});
 	}
 	

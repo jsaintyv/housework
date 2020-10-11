@@ -1,9 +1,8 @@
-<template>
-    
+<template>    
 	<div v-if="getSelected != null">
 		<p> {{ getSelected.name }}  ({{ getSelected.id}})</p>
 
-		<b-card>
+		<b-card class="roundCard" :title="$lang.graphicsBoard.scoringToPaid">			
 			<b-row>		
 				<div class="roundContainer" v-for="r in getScoresByUser" v-bind:key="r.login" col="1">
 					<div class="round">
@@ -16,87 +15,85 @@
 			</b-row>
 		</b-card>
 
-		<b-card>
-			<b-row>
-				<b-col col="12">
-					<b-card>
-						<div class="summaryContainer">
-							<canvas ref="weekSummary" ></canvas>	
-						</div>
-					</b-card>
-				</b-col>
-			</b-row>
-		</b-card>
+		<b-row>
+			<b-col lg="6" sm="12">
+				<b-card class="chartCard" :title="$lang.graphicsBoard.workByWeeks">			
+					<b-row>
+						
+
+								<div class="summaryContainer">
+									<canvas ref="weekSummary" ></canvas>	
+								</div>
+
+						
+					</b-row>			
+				</b-card>
+			</b-col>
+			<b-col lg="6"  sm="12">
+				<b-card class="chartCard" :title="$lang.graphicsBoard.workByType">			
+					<b-row>
+
+
+								<div class="summaryContainer">
+									<canvas ref="typeSummary" ></canvas>	
+								</div>
+
+
+					</b-row>						
+				</b-card>
+			</b-col>
+		<b-row>
 	</div>
 	
 </template>
 
 <script>
-
-import ChartJs from "chart.js";
-import {default as store, ACTION_LOAD_SCORES_BY_USER} from "../stores/index.js";
+import buildDiagramBar from "../utils/ChartJsCubeUtils"
+import {ACTION_LOAD_SCORES_BY_USER, ACTION_LOAD_SCORE_CUBE} from "../stores/index.js";
 
 export default {
   name: 'HouseInfo',
   computed: {
 	  getSelected() {
-		  return store.state.selectedHouse;
+		  return this.$store.state.selectedHouse;
 	  },
 	  getScoresByUser() {
-		  return store.state.scoresByUser;
+		  return this.$store.state.scoresByUser;
+	  },
+	  getScoresCube() {
+		  return this.$store.state.scoresCube;
 	  }
   },
   watch: {
 	  getSelected() {
-		  store.dispatch(ACTION_LOAD_SCORES_BY_USER);
+		this.$store.dispatch(ACTION_LOAD_SCORES_BY_USER);
+		this.$store.dispatch(ACTION_LOAD_SCORE_CUBE);		
 	  },
-	  getScoresByUser() {		
-		if(this.chart) {
+	  getScoresCube() {		
+		if(this.chartWeekSummary) {
 			this.chart.destroy();
-		}
-		var labels = [];
-		var values = [];
-		store.state.scoresByUser.forEach((v)=> {
-			labels.push(v.login);
-			values.push(v.value);
-		});
+		}				
 
-		var ctx = this.$refs.weekSummary.getContext('2d');
-		this.chart = new ChartJs(ctx, {
-			type: 'bar',
-			data: {
-				labels: labels,
-				datasets: [{
-					label: "Score",
-					data: values,
-					backgroundColor: 'rgba(255, 99, 132, 0.2)',						
-					borderColor: 'rgba(255, 99, 132, 1)',						
-					borderWidth: 1					
-				}],
-				
-			},
-			options: {
-				 scales: {
-                  	yAxes: [{
-                            display: true,
-                            ticks: {
-                                beginAtZero: true,
-                                
-                                
-                            }
-                        }]
-                },
-			}
-		});  	
-		console.log(this.chart)	;
+		this.chartWeekSummary = buildDiagramBar(
+			this.$refs.weekSummary, 
+			this.$store.state.scoresCube.filter((c)=> c.VALUE > 0), 
+			(c)=>c.TEMPS,
+			(c)=>c.USER
+		);		
+
+		this.chartTypeSummary = buildDiagramBar(
+			this.$refs.typeSummary, 
+			this.$store.state.scoresCube.filter((c)=> c.VALUE > 0), 
+			(c)=>c.TASK_TYPE,
+			(c)=>c.USER
+		);		
 	  }
   },
   mounted () {
 	this.$nextTick(() => {
-		console.log(this.$refs.weekSummary);
-		
-		store.dispatch(ACTION_LOAD_SCORES_BY_USER);
-		
+		console.log(this.$refs.weekSummary);		
+		this.$store.dispatch(ACTION_LOAD_SCORES_BY_USER);
+		this.$store.dispatch(ACTION_LOAD_SCORE_CUBE);		
   	});
   }
 }
@@ -104,10 +101,27 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
+
+.roundCard .card-body {	
+	margin:auto;	
+	text-align: center;
+}
+
+
+
+.chartCard .card-body,.chartCard .row, .chartCard .summaryContainer  {	
+	width:100%;
+}
+
+.chartCard .card-title {
+	text-align: center;
+}
+
 .summaryContainer {
 	display:block;
 	position:relative;
-	width:60vw;	
+	margin: auto;
 }
 
 .round {

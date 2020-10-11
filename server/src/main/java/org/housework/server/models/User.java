@@ -63,6 +63,13 @@ public class User implements UserDetails {
 	public void setName(String name) {
 		this.name = name;
 	}
+	
+	public String getNameOrLogin() {
+		if(name != null) {
+			return name;
+		}
+		return login;
+	}
 
 	@JsonIgnore
 	public String getPassword() {
