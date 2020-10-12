@@ -140,7 +140,7 @@ class ServerApplicationTests {
 				dataMart.weekDimension.any, dataMart.workIdDimension.any));
 
 		Assertions.assertEquals(1, dataMart.scoreMeasure.getValue(dataMart.userDimension.any, typeMbr,
-				dataMart.weekDimension.getMember("2020_40"), dataMart.workIdDimension.any));
+				dataMart.weekDimension.getMember("2020W40"), dataMart.workIdDimension.any));
 
 		OlapMember typeMt = dataMart.typeDimension.list().stream()
 				.filter((m) -> TASK_METTRE_LA_TABLE.equals(m.getCode())).findFirst().orElse(null);
@@ -149,13 +149,13 @@ class ServerApplicationTests {
 		
 	
 		Map<String, Double> expectedValue = new HashMap<>();
-		expectedValue.put(String.join(";", WORKER1, TASK_LAVE_VAISSELLE, "2020_40"), 1.0);
+		expectedValue.put(String.join(";", WORKER1, TASK_LAVE_VAISSELLE, "2020W40"), 1.0);
 		dataMart.scoreMeasure.forEachCell((members, value) -> {
 			String key = String.join(";", members[0].getCode(), members[1].getCode(), members[2].getCode());
 			if (value.equals(expectedValue.get(key))) {
 				expectedValue.remove(key);
 			}
-		}, dataMart.userDimension.any, typeMbr, dataMart.weekDimension.getMember("2020_40"), dataMart.workIdDimension.any);
+		}, dataMart.userDimension.any, typeMbr, dataMart.weekDimension.getMember("2020W40"), dataMart.workIdDimension.any);
 		
 	
 		Assertions.assertEquals(0, expectedValue.size());
